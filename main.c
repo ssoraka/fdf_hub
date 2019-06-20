@@ -30,13 +30,22 @@ int img_width;
 int img_hight;
 int cam_x;
 int cam_y;
-int perspect = 20;
+
+int perspect = 30;
+int perspect_x = 505;
+int perspect_y = 505;
+
+int max_z = 0;
+int min_z = 0;
+
+int max_x = 0;
+int max_y = 0;
 
 int point_x;
 int point_y;
 
 char *addr;
-int len = 100;
+int len = 70;
 
 double ang_x = 0;
 double ang_y = 0;
@@ -59,7 +68,7 @@ typedef struct		s_vektr
 	int otn_y;
 	int otn_z;
 	struct s_vektr *next;
-	struct s_vektr *parent;
+	struct s_vektr *down;
 }					t_vektr;
 
 typedef struct		s_line
@@ -85,7 +94,7 @@ t_vektr *oy0;
 t_vektr *oz0;
 t_vektr *o0;
 
-t_line *begin_list;
+t_line *g_lines;
 t_vektr *points;
 
 int ft_znak(int num)
@@ -266,20 +275,19 @@ int draw_line_img1(int x1, int y1, int x2, int y2, int color)
 }
 
 
-int draw_line_img(t_vektr *p1, t_vektr *p2, int color)
+int draw_line_img(t_line *line)
 {
-	t_line *line;
+	line->x1 = line->p1->abs_x;// - max_x * len / 2;
+	line->y1 = line->p1->abs_y;// + max_y * len / 2;
+	line->x2 = line->p2->abs_x;// - max_x * len / 2;
+	line->y2 = line->p2->abs_y;// + max_y * len / 2;
+	line->diry = ft_znak(line->y2 - line->y1);
+	line->dirx = ft_znak(line->x2 - line->x1);
+	line->deltay = line->diry * (line->y2 - line->y1);
+	line->deltax = line->dirx * (line->x2 - line->x1);
 
-	line = (t_line *)malloc(sizeof(t_line));
-	line->x1 = p1->abs_x;
-	line->y1 = p1->abs_y;
-	line->x2 = p2->abs_x;
-	line->y2 = p2->abs_y;
-	line->color = color;
-	line->diry = ft_znak(p2->abs_y - p1->abs_y);
-	line->dirx = ft_znak(p2->abs_x - p1->abs_x);
-	line->deltay = line->diry * (p2->abs_y - p1->abs_y);
-	line->deltax = line->dirx * (p2->abs_x - p1->abs_x);
+	//printf("%d_%d_%d_%d\n",line->x1,line->x2,line->y1,line->y2);
+
 	if (line->deltax >= line->deltay)
 	{
 		draw_line_img_lower_45_wu(line);
@@ -288,14 +296,13 @@ int draw_line_img(t_vektr *p1, t_vektr *p2, int color)
 	{
 		draw_line_img_over_45_wu(line);
 	}
-	free(line);
 	return (0);
 }
 
 
 
 
-t_vektr *ft_new_vektor(double x, double y, double z);
+t_vektr *ft_new_vektor(int x, int y, int z);
 
 
 
@@ -349,7 +356,7 @@ t_vektr *ft_rot(t_vektr *ox, t_vektr *oy, double ang)
 }
 
 
-t_vektr *ft_new_vektor(double x, double y, double z)
+t_vektr *ft_new_vektor(int x, int y, int z)
 {
 	t_vektr *tmp;
 
@@ -357,12 +364,12 @@ t_vektr *ft_new_vektor(double x, double y, double z)
 	tmp->x = x;
 	tmp->y = y;
 	tmp->z = z;
-	tmp->otn_x = (int)x;
-	tmp->otn_y = (int)y;
-	tmp->otn_z = (int)z;
+	tmp->otn_x = x;
+	tmp->otn_y = y;
+	tmp->otn_z = z;
 	tmp->color = 0xFFFFFF;
 	tmp->next = NULL;
-	tmp->parent = NULL;
+	tmp->down = NULL;
 	return (tmp);
 }
 
@@ -375,14 +382,16 @@ t_line *ft_new_line(t_vektr *p1, t_vektr *p2, int color)
 	line = (t_line *)malloc(sizeof(t_line));
 	if (line == NULL)
 		return (NULL);
-	line->x1 = p1->abs_x;
+	line->p1 = p1;
+	line->p2 = p2;
+/*	line->x1 = p1->abs_x;
 	line->y1 = p1->abs_y;
 	line->x2 = p2->abs_x;
 	line->y2 = p2->abs_y;
 	line->diry = ft_znak(p2->abs_y - p1->abs_y);
 	line->dirx = ft_znak(p2->abs_x - p1->abs_x);
 	line->deltay = line->diry * (p2->abs_y - p1->abs_y);
-	line->deltax = line->dirx * (p2->abs_x - p1->abs_x);
+	line->deltax = line->dirx * (p2->abs_x - p1->abs_x);*/
 	if (color == 0)
 		line->color = p1->color;
 	else
@@ -430,19 +439,39 @@ void ft_print_oxyz2()
 
 
 	ft_bzero(addr, 	img_width * img_hight * 4);
-	//draw_line_img1(cam_x, cam_y, ox0->abs_x, ox0->abs_y, 0x0000FF);
+	draw_line_img1(cam_x, cam_y, ox0->abs_x, ox0->abs_y, 0x0000FF);
 	//printf("%d_%d_%d\n", ox0->abs_x, ox0->abs_y, ox0->abs_z);
-	//draw_line_img1(cam_x, cam_y, oy0->abs_x, oy0->abs_y, 0x00FF00);
-	//draw_line_img1(cam_x, cam_y, oz0->abs_x, oz0->abs_y, 0xFF0000);
-	draw_line_img(o0, ox0, 0x0000FF);
-	draw_line_img(o0, oy0, 0x00FF00);
-	draw_line_img(o0, oz0, 0xFF0000);
+	draw_line_img1(cam_x, cam_y, oy0->abs_x, oy0->abs_y, 0x00FF00);
+	draw_line_img1(cam_x, cam_y, oz0->abs_x, oz0->abs_y, 0xFF0000);
+	//draw_line_img(o0, ox0, 0x0000FF);
+	//draw_line_img(o0, oy0, 0x00FF00);
+	//draw_line_img(o0, oz0, 0xFF0000);
 
 	//mlx_put_image_to_window (mlx_ptr, win_ptr, img_ptr, 10, 10);
 
 }
 
+void ft_perspektiva(t_vektr *p)
+{
+	int znak;
 
+	p->abs_x -= cam_x;
+	p->abs_y -= cam_y;
+	p->abs_x -= perspect_x;
+	p->abs_y -= perspect_y;
+	znak = ft_znak(p->abs_x);
+	p->abs_x = p->abs_x - (p->abs_z * perspect) * (p->abs_x) / max_z / 50;
+	if (znak != ft_znak(p->abs_x))
+		p->abs_x = 0;
+	znak = ft_znak(p->abs_y);
+	p->abs_y = p->abs_y - (p->abs_z * perspect) * (p->abs_y) / max_z / 50;
+	if (znak != ft_znak(p->abs_y))
+		p->abs_y = 0;
+	p->abs_x += perspect_x;
+	p->abs_y += perspect_y;
+	p->abs_x += cam_x;
+	p->abs_y += cam_y;
+}
 
 void ft_change_points()
 {
@@ -454,25 +483,44 @@ void ft_change_points()
 		p->abs_z = ox0->otn_z * p->otn_x + oy0->otn_z * p->otn_y + oz0->otn_z * p->otn_z;
 		p->abs_x = ox0->otn_x * p->otn_x + oy0->otn_x * p->otn_y + oz0->otn_x * p->otn_z;
 		p->abs_y = ox0->otn_y * p->otn_x + oy0->otn_y * p->otn_y + oz0->otn_y * p->otn_z;
-		//персппектива
-		//p->abs_x = p->abs_x - p->abs_z * ft_znak(p->abs_x) / (perspect);
-		//p->abs_y = p->abs_y - p->abs_z * ft_znak(p->abs_y) / (perspect);
+		if (p->abs_z > max_z)
+			max_z = p->abs_z;
+		if (p->abs_z < min_z)
+			max_z = p->abs_z;
 		p->abs_x = p->abs_x + cam_x;
 		p->abs_y = p->abs_y + cam_y;
 		p = p->next;
 	}
+
+	p = points;
+	while (p)
+	{
+		ft_perspektiva(p);
+		p = p->next;
+	}
+
 }
 
 
-void ft_print_points()
-{
-	t_vektr *point;
 
-	point = points;
-	while (point->next)
+
+
+
+void ft_print_lines()
+{
+	t_line *line;
+
+	line = g_lines;
+	//перспектива
+	//ft_perspektiva(point);
+	//printf("%d_%d_%d_%d\n", g_lines->p1->abs_x, g_lines->p2->abs_x, g_lines->p1->abs_y, g_lines->p2->abs_y);
+	//draw_line_img(line);
+	while (line)
 	{
-		draw_line_img(point, point->next, 0xFFFFFF);
-		point = point->next;
+		//перспектива
+		//ft_perspektiva(point->next);
+		draw_line_img(line);
+		line = line->next;
 	}
 
 }
@@ -493,13 +541,25 @@ int deal_key(int key, void *param)
 		return (0);
 	}
 	if (key == 124)
-		cam_x++;
+		cam_x+=4;
 	if (key == 123)
-		cam_x--;
+		cam_x-=4;
 	if (key == 126)
-		cam_y--;
+		cam_y-=4;
 	if (key == 125)
-		cam_y++;
+		cam_y+=4;
+	if (key == 88)
+		perspect_x+=10;
+	if (key == 86)
+		perspect_x-=10;
+	if (key == 91)
+		perspect_y-=10;
+	if (key == 84)
+		perspect_y+=10;
+	if (key == 69)
+		len+=4;
+	if (key == 78)
+		len-=4;
 	if (key == 35)
 	{
 		perspect++;
@@ -512,12 +572,12 @@ int deal_key(int key, void *param)
 		if (perspect == 0)
 			perspect--;
 	}
-	printf("%d\n", perspect);
+	//printf("%d\n", perspect);
 	mlx_clear_window(mlx_ptr, win_ptr);
 	ft_print_oxyz2();
 
 	ft_change_points();
-	ft_print_points();
+	ft_print_lines();
 	mlx_put_image_to_window (mlx_ptr, win_ptr, img_ptr, 10, 10);
 
 	return (0);
@@ -572,11 +632,11 @@ void ft_return_lines(t_line **begin)
 	t_line *l4;
 
 
-	p1 = ft_new_vektor(-1, -1, 1);
-	p2 = ft_new_vektor(1, -1, 1);
-	p3 = ft_new_vektor(1, 1, 1);
-	p4 = ft_new_vektor(-1, 1, 1);
-	p5 = ft_new_vektor(-1, -1, 1);
+	p1 = ft_new_vektor(-1, -1, 0);
+	p2 = ft_new_vektor(1, -1, 0);
+	p3 = ft_new_vektor(1, 1, 0);
+	p4 = ft_new_vektor(-1, 1, 0);
+	p5 = ft_new_vektor(-1, -1, 0);
 
 	p6 = ft_new_vektor(-1, -1, -1);
 	p7 = ft_new_vektor(1, -1, -1);
@@ -595,15 +655,6 @@ void ft_return_lines(t_line **begin)
 	p8->next = p9;
 	p9->next = p10;
 
-	/*l1 = ft_new_line(p1, p2, 0);
-	l2 = ft_new_line(p2, p3, 0);
-	l3 = ft_new_line(p3, p4, 0);
-	l4 = ft_new_line(p4, p1, 0);
-
-	l1->next = l2;
-	l2->next = l3;
-	l3->next = l4;
-	*begin = l1;*/
 
 }
 
@@ -611,8 +662,8 @@ void ft_return_lines(t_line **begin)
 
 int ft_create_window(void)
 {
-	width = 500;
-	hight = 500;
+	width = 2000;
+	hight = 1600;
 	point_x = width/2;
 	point_y = hight/2;
 	mlx_ptr = mlx_init();
@@ -632,11 +683,154 @@ int ft_create_img(void)
 	return (0);
 }
 
+
+t_vektr *parser_string(char *str, int row)
+{
+	int column;
+	t_vektr *begin;
+	t_vektr *v;
+
+	column = 0;
+	begin = ft_new_vektor(column, row, ft_atoi(str));
+	while (ft_isdigit(*str) || *str == '-')
+		str++;
+	v = begin;
+	while (*str)
+	{
+		//надо сделать функции, которые будут возвращать указатель на строку с цифрой и с цветом
+		while (ft_isspace(*str))
+			str++;
+		column++;
+		v->next = ft_new_vektor(column, row, ft_atoi(str));
+		while (ft_isdigit(*str) || *str == '-')
+			str++;
+		v = v->next;
+	}
+	if (max_x < column)
+		max_x = column;
+	return (begin);
+}
+
+
+t_vektr *pars_file(int fd)
+{
+	char *line;
+	t_vektr *begin;
+	t_vektr *v;
+	int row;
+
+	row = 0;
+	if (get_next_line(fd, &line) < 1)
+		return (NULL);
+	begin = parser_string(line, row);
+	v = begin;
+	while (get_next_line(fd, &line))
+	{
+		row++;
+		v->down = parser_string(line, row);
+		free(line);
+		v = v->down;
+	}
+	if (max_y < row)
+		max_y = row;
+	return (begin);
+}
+
+
+int		ft_map_from_file(char *name, t_vektr **begin)
+{
+	t_vektr *v;
+	int		fd;
+
+	if ((fd = open(name, O_RDWR)) < 0)
+	{
+		ft_putstr("error");
+		return (1);
+	}
+	else
+	{
+		v = pars_file(fd);
+		close(fd);
+	}
+	if (v == NULL)
+		return (1);
+	*begin = v;
+	return (0);
+}
+
+void ft_add_line(t_line **begin, t_vektr *p1, t_vektr *p2)
+{
+	t_line *line;
+	t_line *tmp;
+
+	line = ft_new_line(p1, p2, 0xFFFFFF);
+
+	if (!line)
+		return ;
+	tmp = *begin;
+	*begin = line;
+	line->next = tmp;
+}
+
+
+int ft_lines_from_points(t_line **begin, t_vektr *point)
+{
+	t_line *line;
+	t_vektr *p1;
+	t_vektr *p2;
+
+	while (point)
+	{
+		p1 = point;
+		point = point->down;
+		p2 = point;
+		while (p1->next)
+		{
+			ft_add_line(begin, p1, p1->next);
+			ft_add_line(begin, p1, p2);
+			p1 = p1->next;
+			if (p2 && p2->next)
+				p2 = p2->next;
+		}
+		p1->next = point;
+		ft_add_line(begin, p1, p2);
+	}
+	return (0);
+}
+
+
+
 int main()
 {
-	ft_return_lines(&begin_list);
+	t_vektr *begin_point;
+	t_line *begin_line;
+
+	ft_map_from_file("text.txt", &begin_point);
+	ft_lines_from_points(&begin_line, begin_point);
+
+	g_lines = begin_line;
+	points = begin_point;
+
+//	ft_print_lines();
+
+	//g_lines = g_lines->next;
+	//g_lines = g_lines->next;
+	//printf("%d_%d_%d_%d\n", g_lines->p1->otn_x, g_lines->p2->otn_x, g_lines->p1->otn_y, g_lines->p2->otn_y);
+/*	printf("%d_%d_%d\n", begin_point->otn_x, begin_point->otn_y, begin_point->otn_z);
+	begin_point = begin_point->next;
+	printf("%d_%d_%d\n", begin_point->otn_x, begin_point->otn_y, begin_point->otn_z);
+	begin_point = begin_point->next;
+	printf("%d_%d_%d\n", begin_point->otn_x, begin_point->otn_y, begin_point->otn_z);
+	begin_point = begin_point->next;
+	printf("%d_%d_%d\n", begin_point->otn_x, begin_point->otn_y, begin_point->otn_z);
+	begin_point = begin_point->next;
+	printf("%d_%d_%d\n", begin_point->otn_x, begin_point->otn_y, begin_point->otn_z);
+*/
+
+	//ft_return_lines(&begin_list);
 	ft_create_window();
 	ft_create_img();
+
 	int bits_per_pixel = 0;
 	int size_line = 0;
 	int endian = 0;
@@ -649,15 +843,20 @@ int main()
 
 
 	mlx_hook(win_ptr, 2, 0, deal_key, (void *)0);
-	//mlx_key_hook(win_ptr, deal_key, (void *)0);
-	//mlx_hook(win_ptr, 4, 0, mouse_press, (void *)0);
-///	mlx_hook(win_ptr, 6, 0, mouse_move, (void *)0);
-	//mlx_mouse_hook(win_ptr, mouse_press, (void *)0);
 	mlx_loop(mlx_ptr);
 
 
 	return (0);
 }
+
+
+//mlx_key_hook(win_ptr, deal_key, (void *)0);
+//mlx_hook(win_ptr, 4, 0, mouse_press, (void *)0);
+///	mlx_hook(win_ptr, 6, 0, mouse_move, (void *)0);
+//mlx_mouse_hook(win_ptr, mouse_press, (void *)0);
+
+
+
 
 //gcc -I /usr/local/include main.c -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit
 //gcc -I /usr/local/include main.c -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit libft.a
