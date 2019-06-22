@@ -31,9 +31,9 @@ int img_hight;
 int cam_x;
 int cam_y;
 
-int perspect = 30;
-int perspect_x = 505;
-int perspect_y = 505;
+int perspect = 2000;
+int perspect_x = 0;//505;
+int perspect_y = 0;//505;
 
 int max_z = 0;
 int min_z = 0;
@@ -86,6 +86,7 @@ typedef struct		s_line
 	struct s_vektr *p1;
 	struct s_vektr *p2;
 	struct s_line *next;
+
 }					t_line;
 
 
@@ -151,9 +152,71 @@ int ft_altha_from_error(int error, int delta)
 	return (altha);
 }
 
+
+int ft_interpolation(int percent, int color1, int color2, int byte)
+{
+	int deltared;
+	char red;
+
+	while (byte > 1)
+	{
+		color1 = color1 >> 8;
+		color2 = color2 >> 8;
+		byte--;
+	}
+	color1 = color1 & 0xFF;
+	color2 = color2 & 0xFF;
+	deltared = ((color2 - color1) * percent) / 100 + color1;
+	//deltared = (unsigned char)deltared;
+	return (deltared);
+}
+
+int ft_grad_color(int delta1, int delta2, int color1, int color2)
+{
+	int color;
+	int grad;
+
+	//if (delta1 < 0)
+	//	delta1 = -delta1;
+	//if (delta2 < 0)
+	//	delta2 = -delta2;
+	grad = 100 - (delta1 * 100) / delta2;
+	color = ft_interpolation(grad, color1, color2, 1);
+	color = color + ((ft_interpolation(grad, color1, color2, 2)) << 8);
+	color = color + ((ft_interpolation(grad, color1, color2, 3)) << 16);
+	return (color);
+}
+
+
+void ft_set_color_to_line(t_line *line, int lower_45)
+{
+	int delta1;
+	int delta2;
+	int grad;
+	int color;
+
+	if (lower_45)
+	{
+		delta1 = ABS(line->x2 - line->x1);
+		delta2 = line->deltax;
+	}
+	else
+	{
+		delta1 = ABS(line->y2 - line->y1);
+		delta2 = line->deltay;
+	}
+	line->color = ft_grad_color(delta1, delta2, line->p1->color, line->p2->color);
+}
+
+
+
+
+
+
 /*
 ** худо бедно работает...
 */
+
 void draw_line_img_lower_45_wu(t_line *line)
 {
 	int error;
@@ -164,6 +227,7 @@ void draw_line_img_lower_45_wu(t_line *line)
 	znak = ft_znak(line->deltax);
 	while (line->x1 != line->x2)
 	{
+		//ft_set_color_to_line(line, 1);
 		if (2 * error >= line->deltax)
 		{
 			line->y1 += line->diry;
@@ -181,6 +245,7 @@ void draw_line_img_lower_45_wu(t_line *line)
 	ft_put_pixel_to_img(addr, line->x1, line->y1, color);
 }
 
+
 void draw_line_img_over_45_wu(t_line *line)
 {
 	int error;
@@ -191,6 +256,7 @@ void draw_line_img_over_45_wu(t_line *line)
 	znak = ft_znak(line->deltay);
 	while (line->y1 != line->y2)
 	{
+		//ft_set_color_to_line(line, 0);
 		if (2 * error >= line->deltay)
 		{
 			line->x1 += line->dirx;
@@ -209,13 +275,16 @@ void draw_line_img_over_45_wu(t_line *line)
 }
 
 
+
 void draw_line_img_lower_45(t_line *line)
 {
 	int error;
+	int color;
 
 	error = 0;
 	while (line->x1 != line->x2)
 	{
+		ft_set_color_to_line(line, 1);
 		ft_put_pixel_to_img(addr, line->x1, line->y1, line->color);
 		error = error + line->deltay;
 		if (2 * error >= line->deltax)
@@ -236,6 +305,7 @@ void draw_line_img_over_45(t_line *line)
 	error = 0;
 	while (line->y1 != line->y2)
 	{
+		ft_set_color_to_line(line, 0);
 		ft_put_pixel_to_img(addr, line->x1, line->y1, line->color);
 		error = error + line->deltax;
 		if (2 * error >= line->deltay)
@@ -275,6 +345,62 @@ int draw_line_img1(int x1, int y1, int x2, int y2, int color)
 }
 
 
+void draw_line_img_lower_456(t_line *line)
+{
+	int error;
+	int color;
+	int znak;
+
+	error = 0;
+	znak = ft_znak(line->deltax);
+	while (line->x1 != line->x2)
+	{
+		ft_set_color_to_line(line, 1);
+		if (2 * error >= line->deltax)
+		{
+			line->y1 += line->diry;
+			error = error - line->deltax;
+		}
+		ft_put_pixel_to_img(addr, line->x1, line->y1, line->color);
+		color = ft_altha_from_error(error, line->deltax) + line->color;
+		if (ft_znak(error) * znak == 1)
+			ft_put_pixel_to_img(addr, line->x1, line->y1 + line->diry, color);
+		else if (ft_znak(error) * znak == -1)
+			ft_put_pixel_to_img(addr, line->x1, line->y1 - line->diry, color);
+		error = error + line->deltay;
+		line->x1 += line->dirx;
+	}
+	ft_put_pixel_to_img(addr, line->x1, line->y1, color);
+}
+
+void draw_line_img_over_457(t_line *line)
+{
+	int error;
+	int color;
+	int znak;
+
+	error = 0;
+	znak = ft_znak(line->deltay);
+	while (line->y1 != line->y2)
+	{
+		ft_set_color_to_line(line, 0);
+		if (2 * error >= line->deltay)
+		{
+			line->x1 += line->dirx;
+			error = error - line->deltay;
+		}
+		ft_put_pixel_to_img(addr, line->x1, line->y1, line->color);
+		color = ft_altha_from_error(error, line->deltay) + line->color;
+		if (ft_znak(error) * znak == 1)
+			ft_put_pixel_to_img(addr, line->x1 + line->dirx, line->y1, color);
+		else if (ft_znak(error) * znak == -1)
+			ft_put_pixel_to_img(addr, line->x1 - line->dirx, line->y1, color);
+		error = error + line->deltax;
+		line->y1 +=line->diry;
+	}
+	ft_put_pixel_to_img(addr, line->x1, line->y1, color);
+}
+
 int draw_line_img(t_line *line)
 {
 	line->x1 = line->p1->abs_x;// - max_x * len / 2;
@@ -290,11 +416,11 @@ int draw_line_img(t_line *line)
 
 	if (line->deltax >= line->deltay)
 	{
-		draw_line_img_lower_45_wu(line);
+		draw_line_img_lower_456(line);
 	}
 	else
 	{
-		draw_line_img_over_45_wu(line);
+		draw_line_img_over_457(line);
 	}
 	return (0);
 }
@@ -460,11 +586,13 @@ void ft_perspektiva(t_vektr *p)
 	p->abs_x -= perspect_x;
 	p->abs_y -= perspect_y;
 	znak = ft_znak(p->abs_x);
-	p->abs_x = p->abs_x - (p->abs_z * perspect) * (p->abs_x) / max_z / 50;
+	//p->abs_x = p->abs_x - (p->abs_z * perspect) * (p->abs_x) / max_z / 50;
+	p->abs_x = p->abs_x * (perspect - p->abs_z) / perspect;
 	if (znak != ft_znak(p->abs_x))
 		p->abs_x = 0;
 	znak = ft_znak(p->abs_y);
-	p->abs_y = p->abs_y - (p->abs_z * perspect) * (p->abs_y) / max_z / 50;
+	//p->abs_y = p->abs_y - (p->abs_z * perspect) * (p->abs_y) / max_z / 50;
+	p->abs_y = p->abs_y * (perspect - p->abs_z) / perspect;
 	if (znak != ft_znak(p->abs_y))
 		p->abs_y = 0;
 	p->abs_x += perspect_x;
@@ -472,6 +600,33 @@ void ft_perspektiva(t_vektr *p)
 	p->abs_x += cam_x;
 	p->abs_y += cam_y;
 }
+
+
+void ft_perspektiva2(t_vektr *p)
+{
+	int znak;
+	double sinx;
+	double siny;
+	long d;
+
+
+	p->abs_x -= cam_x;
+	p->abs_y -= cam_y;
+	p->abs_x -= perspect_x;
+	p->abs_y -= perspect_y;
+	d = sqrt(p->abs_x * p->abs_x + p->abs_y * p->abs_y + perspect * perspect);
+	//выпуклая сфера
+	//p->abs_x = (perspect * p->abs_x) / d;
+	//p->abs_y = (perspect * p->abs_y) / d;
+	//вогнутаяая сфера
+	p->abs_x = (d * p->abs_x) / perspect;
+	p->abs_y = (d * p->abs_y) / perspect;
+	p->abs_x += perspect_x;
+	p->abs_y += perspect_y;
+	p->abs_x += cam_x;
+	p->abs_y += cam_y;
+}
+
 
 void ft_change_points()
 {
@@ -483,10 +638,10 @@ void ft_change_points()
 		p->abs_z = ox0->otn_z * p->otn_x + oy0->otn_z * p->otn_y + oz0->otn_z * p->otn_z;
 		p->abs_x = ox0->otn_x * p->otn_x + oy0->otn_x * p->otn_y + oz0->otn_x * p->otn_z;
 		p->abs_y = ox0->otn_y * p->otn_x + oy0->otn_y * p->otn_y + oz0->otn_y * p->otn_z;
-		if (p->abs_z > max_z)
-			max_z = p->abs_z;
-		if (p->abs_z < min_z)
-			max_z = p->abs_z;
+//		if (p->abs_z > max_z)
+//			max_z = p->abs_z;
+//		if (p->abs_z < min_z)
+//			max_z = p->abs_z;
 		p->abs_x = p->abs_x + cam_x;
 		p->abs_y = p->abs_y + cam_y;
 		p = p->next;
@@ -495,7 +650,7 @@ void ft_change_points()
 	p = points;
 	while (p)
 	{
-		ft_perspektiva(p);
+		ft_perspektiva2(p);
 		p = p->next;
 	}
 
@@ -541,13 +696,13 @@ int deal_key(int key, void *param)
 		return (0);
 	}
 	if (key == 124)
-		cam_x+=4;
+		cam_x+=10;
 	if (key == 123)
-		cam_x-=4;
+		cam_x-=10;
 	if (key == 126)
-		cam_y-=4;
+		cam_y-=10;
 	if (key == 125)
-		cam_y+=4;
+		cam_y+=10;
 	if (key == 88)
 		perspect_x+=10;
 	if (key == 86)
@@ -562,16 +717,17 @@ int deal_key(int key, void *param)
 		len-=4;
 	if (key == 35)
 	{
-		perspect++;
+		perspect+=5;
 		if (perspect == 0)
 			perspect++;
 	}
 	if (key == 31)
 	{
-		perspect--;
+		perspect-=5;
 		if (perspect == 0)
 			perspect--;
 	}
+	ft_put_pixel_to_img(addr, perspect_x, perspect_y, 0xFF0000);
 	//printf("%d\n", perspect);
 	mlx_clear_window(mlx_ptr, win_ptr);
 	ft_print_oxyz2();
@@ -800,6 +956,42 @@ int ft_lines_from_points(t_line **begin, t_vektr *point)
 
 
 
+void ft_shift_points_to_center()
+{
+	t_vektr *p;
+	int delta_z;
+
+	p = points;
+	while (p)
+	{
+		if (p->otn_z > max_z)
+			max_z = p->otn_z;
+		if (p->otn_z < min_z)
+			min_z = p->otn_z;
+		p = p->next;
+	}
+
+	//printf("%d_%d_%d\n",delta_z, max_z, min_z);
+	delta_z = max_z - min_z;
+	p = points;
+	while (p)
+	{
+		p->color = ft_grad_color(p->otn_z - min_z, delta_z, 0xFF0000, 0xFF00);
+		p->otn_x = p->otn_x * 2;
+		p->otn_y = p->otn_y * 2;
+		p->otn_z = p->otn_z;
+		p->otn_x = p->otn_x - max_x;
+		p->otn_y = p->otn_y - max_y;
+		// if (p->otn_z == 0)
+		// 	p->color = 0xFF;
+		// else
+		// 	p->color = 0xFF0000;
+		p = p->next;
+	}
+
+}
+
+
 int main()
 {
 	t_vektr *begin_point;
@@ -810,6 +1002,7 @@ int main()
 
 	g_lines = begin_line;
 	points = begin_point;
+	ft_shift_points_to_center();
 
 //	ft_print_lines();
 
