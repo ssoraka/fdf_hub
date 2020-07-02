@@ -45,7 +45,7 @@ void	ft_rotate_all_points(t_arr *points, t_pict *pic, t_param *param)
 	{
 		ft_change_points(param, v + i);
 		// ft_print_rect(pic, &((v + i)->zoom), 10, 0xFFFFFF);
-		circle(pic, v + i, 10, 0xFFFFFF);
+		circle(pic, v + i, 10, (v + i)->color);
 		i++;
 	}
 }

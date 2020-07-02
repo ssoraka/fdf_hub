@@ -46,6 +46,7 @@ int		ft_create_lines_from_points(t_arr *points, t_arr *lines)
 	t_line line;
 
 	ft_bzero8((void *)&line, sizeof(t_line));
+	line.color = 0xFF00;
 	last = ft_arr_get(points, points->elems_used - 1);
 	down = ft_arr_get(points, 0);
 	while ((curr = (t_vektr *)ft_arr_get_next(points)))
