@@ -29,7 +29,8 @@ LIBCOL = collections/arr.c
 LIBCOL_HEADER = -I ./collections/
 LIBFT = ../libft/libft.a
 LIBFT_HEADER = -I ./../libft/
-OBJ = main.c points.c
+OBJ = main.c points.c create_lines_from_points.c create_points_from_file.c images.c keys.c rotate.c print_shapes.c \
+lines_vektrs.c color_interpolation.c
 MLX_LIB = -L /usr/local/lib/ -lmlx
 MLX_HEAD = -I /usr/local/include
 FRAMEWORK = -framework OpenGL -framework AppKit -framework OpenCL

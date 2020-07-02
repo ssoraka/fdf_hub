@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_mod1.h"
+#include "./includes/ft_fdf.h"
 
-void	ft_print_rect2(t_pict *pic, t_point *center, int len, int color)
+void	ft_print_rect(t_pict *pic, t_point *center, int len, int color)
 {
 	int i;
 	int j;
@@ -36,7 +36,7 @@ void	ft_print_rect2(t_pict *pic, t_point *center, int len, int color)
 
 
 /* Вспомогательная функция, печатает точки, определяющие окружность */
-void	plot_circle2(t_pict *pic, t_point *p, t_point *center, int color_code)
+void	plot_circle(t_pict *pic, t_point *p, t_point *center, int color_code)
 {
 	t_point point;
 
@@ -51,7 +51,7 @@ void	plot_circle2(t_pict *pic, t_point *p, t_point *center, int color_code)
 }
 
 /* Вычерчивание окружности с использованием алгоритма Мичнера */
-void	circle2(t_pict *pic, t_vektr *center, int radius, int color_code)
+void	circle(t_pict *pic, t_vektr *center, int radius, int color_code)
 {
 	int x;
 	int y;
@@ -64,9 +64,9 @@ void	circle2(t_pict *pic, t_vektr *center, int radius, int color_code)
 	while (x < y)
 	{
 		ft_fill_point(&p, x, y, 0);
-		plot_circle2(pic, &p, &(center->zoom), color_code);
+		plot_circle(pic, &p, &(center->zoom), color_code);
 		ft_fill_point(&p, y, x, 0);
-		plot_circle2(pic, &p, &(center->zoom),color_code);
+		plot_circle(pic, &p, &(center->zoom),color_code);
 		if (delta < 0)
 			delta += 4 * x + 6;
 		else
@@ -77,5 +77,5 @@ void	circle2(t_pict *pic, t_vektr *center, int radius, int color_code)
 		x++;
 	}
 	if (x == y)
-		plot_circle2(pic, &p, &(center->zoom),color_code);
+		plot_circle(pic, &p, &(center->zoom),color_code);
 }

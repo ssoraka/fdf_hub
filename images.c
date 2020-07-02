@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_mod1.h"
+#include "./includes/ft_fdf.h"
 
 
 /*
@@ -24,23 +24,17 @@ void	ft_init_params(t_param *param)
 	param->len = CONST_LEN;
 	param->ang.z = M_PI;
 	param->pause = 1;
-	param->is_need_print_obstacles = TRUE;
-	param->brush = 1;
 	param->light.x = 0.5;
 	param->light.y = -1;
 	param->light.z = 1;
-	param->water.x = I0 + 1;
-	param->water.y = J0 + 1;
-	param->water.z = K0 + 1;
-	param->is_need_print_water = TRUE;
 	ft_create_xyz(&(param->oxyz));
 }
 
 
 void	ft_clear_image(t_pict *pic)
 {
-	ft_memset8((void *)pic->addr, 0xC0FFFFFFC0FFFFFF, pic->count_byte);
-	ft_memset8((void *)pic->z_buffer, 0x8FFFFFFF8FFFFFFF, pic->count_byte);
+	ft_memset8((void *)pic->addr, 0xC0FFFFFF, pic->count_byte);
+	ft_memset8((void *)pic->z_buffer, 0x8FFFFFFF, pic->count_byte);
 }
 
 void	ft_return_image(t_pict *pic)

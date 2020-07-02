@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_mod1.h"
+#include "./includes/ft_fdf.h"
 
 #define CAM_SHIFT 20
 #define CAM_SCALE 1.1
@@ -41,8 +41,6 @@
 #define KEY_R 15
 #define KEY_G 5
 #define KEY_I 34
-
-#define MAX_BRUSH (IMAX / 2)
 
 
 int		ft_rotate_and_csale(t_param *vis, int key)
@@ -89,76 +87,21 @@ int		ft_shift(t_param *vis, int key)
 	return (TRUE);
 }
 
-#define MOVE_LEFT 86
-#define MOVE_RIGHT 88
-#define MOVE_UP 91
-#define MOVE_DOWN 87
-#define MOVE_FORW 83
-#define MOVE_BACKW 84
 
-int		ft_is_water_cell_shift(t_param *param, int key)
+int		ft_deal_key(int key, void *parametrs)
 {
-	t_point	dir;
+	t_param *param;
 
-	dir = param->water;
-	if (key == MOVE_LEFT)
-		dir.x++;
-	else if (key == MOVE_RIGHT)
-		dir.x--;
-	else if (key == MOVE_UP)
-		dir.y++;
-	else if (key == MOVE_DOWN)
-		dir.y--;
-	else if (key == MOVE_FORW)
-		dir.z++;
-	else if (key == MOVE_BACKW)
-		dir.z--;
-	else
-		return (FALSE);
-	if (dir.x <= I0 || dir.x >= IMAX || dir.y <= J0 || dir.y >= JMAX
-	|| dir.z <= K0 || dir.z >= KMAX)
-		return (FALSE);
-	param->water = dir;
-	return (TRUE);
-}
-
-int		ft_change_brush(t_param *param, int key)
-{
-	if (key == KEY_K && param->brush < MAX_BRUSH)
-		param->brush++;
-	else if (key == KEY_L && param->brush > 1)
-		param->brush--;
-	else
-		return (FALSE);
-	return (TRUE);
-}
-
-int		deal_key(int key, void *param)
-{
-	t_param *vis;
-
-	vis = (t_param *)param;
-	vis->is_water_change = ft_change_brush(vis, key)
-	+ ft_is_water_cell_shift(vis, key);
-	if (ft_rotate_and_csale(vis, key) || ft_shift(vis, key) || key == KEY_O
-	|| key == KEY_G)
-		vis->is_obstacles_change = TRUE;
-	if (key == KEY_ESC)
-		ft_del_all(NULL);
-	if (key == KEY_P)
-		vis->pause = !vis->pause;
-	if (key == KEY_R)
-		vis->rain = NEED_STOP_PRINT_FOR_RAIN;
-	if (key == KEY_O)
-		vis->is_smooth_relief = !vis->is_smooth_relief;
-	if (key == KEY_I)
-	{
-		vis->is_need_print_obstacles = !vis->is_need_print_obstacles;
-		if (vis->is_need_print_obstacles) //возможно следует изменить эту херь
-			vis->is_obstacles_change = TRUE;
-	}
-	if (key == KEY_G)
-		vis->grad = !vis->grad;
 	printf("\n%d\n", key);
-	return (0);
+	param = (t_param *)parametrs;
+	if (ft_rotate_and_csale(param, key) || ft_shift(param, key) || key == KEY_O
+	|| key == KEY_G)
+		param->is_points_change = TRUE;
+	if (key == KEY_ESC)
+		return (FAIL);
+	if (key == KEY_P)
+		param->pause = !param->pause;
+	if (key == KEY_G)
+		param->grad = !param->grad;
+	return (SUCCESS);
 }

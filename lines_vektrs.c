@@ -10,39 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_mod1.h"
+#include "./includes/ft_fdf.h"
 
-t_vektr	*ft_new_vektor2(REAL x, REAL y, REAL z, int color)
-{
-	t_vektr *tmp;
-
-	tmp = (t_vektr *)ft_memalloc(sizeof(t_vektr));
-	if (!tmp)
-		return (NULL);
-	ft_fill_dpoint(&(tmp->abs), y, x, z);
-	tmp->color = color;
-	tmp->next = NULL;
-	return (tmp);
-}
-
-
-t_line	*ft_new_line(t_vektr *p1, t_vektr *p2, int color)
-{
-	t_line *line;
-
-	if (p1 == NULL || p2 == NULL)
-		return (NULL);
-	line = (t_line *)ft_memalloc(sizeof(t_line));
-	if (line == NULL)
-		return (NULL);
-	line->p1 = p1;
-	line->p2 = p2;
-	line->color = color;
-	return (line);
-}
-
-
-void	draw_line_img_lower_452(t_line *line, t_point *p, t_pict *pic, int grad)
+void	draw_line_img_lower(t_line *line, t_point *p, t_pict *pic, int grad)
 {
 	t_point error;
 	int color;
@@ -77,7 +47,7 @@ void	draw_line_img_lower_452(t_line *line, t_point *p, t_pict *pic, int grad)
 }
 
 
-void	draw_line_img_over_452(t_line *line, t_point *p, t_pict *pic, int grad)
+void	draw_line_img_over(t_line *line, t_point *p, t_pict *pic, int grad)
 {
 	t_point error;
 	int color;
@@ -110,7 +80,7 @@ void	draw_line_img_over_452(t_line *line, t_point *p, t_pict *pic, int grad)
 }
 
 
-void	draw_line_img2(t_line *line, t_pict *pic, int grad)
+void	draw_line_img(t_line *line, t_pict *pic, int grad)
 {
 	t_point p;
 
@@ -127,7 +97,7 @@ void	draw_line_img2(t_line *line, t_pict *pic, int grad)
 	line->delta.z = line->dir.z * (line->p2->zoom.z - p.z);
 	//printf("%d_%d\n", p.z, p.z);
 	if (line->delta.x >= line->delta.y)
-		draw_line_img_lower_452(line, &p, pic, grad);
+		draw_line_img_lower(line, &p, pic, grad);
 	else
-		draw_line_img_over_452(line, &p, pic, grad);
+		draw_line_img_over(line, &p, pic, grad);
 }

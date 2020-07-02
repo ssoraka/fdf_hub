@@ -87,22 +87,12 @@ typedef struct		s_param
 	int				cam_y;
 	int				pause;
 	int				exit;
-	int				rain;
-	int				brush;
-	int				is_obstacles_change;
-	int				is_smooth_relief;
-	int				is_need_print_obstacles;
-	int				is_relief_changed;
-	int				is_printing;
-	int				is_reading;
-	int				is_water_change;
-	int				is_need_print_water;
+	int				is_points_change;
 	int				grad;
 	double			len;
 	struct s_dpoint	light;
 	struct s_dpoint	ang;
 	struct s_dpoint	cos;
-	struct s_point	water;
 	struct s_oxyz	oxyz;
 }					t_param;
 

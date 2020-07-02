@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_mod1.h"
+#include "./includes/ft_fdf.h"
 
 /*
 **	избавление от погрешности
@@ -92,7 +92,7 @@ t_dpoint	ft_rot_dpoint(t_dpoint *v, t_oxyz *oxyz)
 	return (rot_v);
 }
 
-void	ft_change_points4(t_param *param, t_vektr *p)
+void	ft_change_points(t_param *param, t_vektr *p)
 {
 	t_dpoint rot_p;
 

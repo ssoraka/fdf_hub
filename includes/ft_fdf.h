@@ -15,6 +15,7 @@
 
 
 #include "../libft/libft.h"
+#include "../collections/collections_header.h"
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,6 +55,7 @@
 /*
 **	images
 */
+#define CONST_LEN 1000
 #define CONST_WIDTH 2000
 #define CONST_HEINTH 1360
 #define CAM_X 1200
@@ -110,69 +112,71 @@ typedef enum	e_rain
 /*
 **	main.c
 */
+void	ft_exit(t_all *all, char *error_message);
+
+/*
+**	create_lines_from_points.c
+*/
+int		ft_create_right_line(t_vektr *curr, t_vektr *next, t_line *line, t_arr *lines);
+int		ft_create_down_line(t_vektr *curr, t_vektr *down, t_line *line, t_arr *lines);
+int		ft_create_lines_from_points(t_arr *points, t_arr *lines);
+
+/*
+**	create_lines_from_points.c
+*/
+int		ft_get_color_from_string(char *str);
+int		ft_string_to_points(char *str, t_arr *points, int y);
+int		ft_points_from_file(char *name, t_arr *points);
+
 
 
 /*
-** initialization.c
+**	color_interpolation.c
 */
+int		ft_interpolation(int percent, int color1, int color2, int byte);
+int		ft_grad_color(int delta1, int delta2, int color1, int color2);
+int		ft_set_color_to_point(t_line *line, t_point *p, int lower_45);
+int		ft_int_interpolation(int y, int delta_y, int x1, int x2);
 
-// void	ft_init_delta_xyz(void);
-// void	ft_del_all(char *message);
+/*
+**	print_shapes.c
+*/
+void	ft_print_rect(t_pict *pic, t_point *center, int len, int color);
+void	plot_circle(t_pict *pic, t_point *p, t_point *center, int color_code);
+void	circle(t_pict *pic, t_vektr *center, int radius, int color_code);
 
+/*
+**	rotate.c
+*/
+void	ft_norm_vektor(t_dpoint *vek);
+void	ft_rotate_vek_around_vek_by_ang(t_dpoint *ox, t_dpoint *oy, double ang);
+void	ft_change_points(t_param *vis, t_vektr *p);
+void	ft_rotate_xyz(t_oxyz *oxyz, t_dpoint *ang);
+t_dpoint	ft_rot_dpoint(t_dpoint *v, t_oxyz *oxyz);
+void	ft_ret_zoom_xyz(t_vektr *ox, t_param *vis);
+void	ft_change_points5(t_param *param, t_vektr *p);
 
-// /*
-// **	color_interpolation.c
-// */
-// int		ft_interpolation(int percent, int color1, int color2, int byte);
-// int		ft_grad_color(int delta1, int delta2, int color1, int color2);
-// int		ft_set_color_to_point(t_line *line, t_point *p, int lower_45);
-// int		ft_int_interpolation(int y, int delta_y, int x1, int x2);
-
-// /*
-// **	print_shapes.c
-// */
-// void	ft_print_rect2(t_pict *pic, t_point *center, int len, int color);
-// void	plot_circle2(t_pict *pic, t_point *p, t_point *center, int color_code);
-// void	circle2(t_pict *pic, t_vektr *center, int radius, int color_code);
-
-// /*
-// **	rotate.c
-// */
-// void	ft_norm_vektor(t_dpoint *vek);
-// void	ft_rotate_vek_around_vek_by_ang(t_dpoint *ox, t_dpoint *oy, double ang);
-// void	ft_change_points4(t_param *vis, t_vektr *p);
-// void	ft_rotate_xyz(t_oxyz *oxyz, t_dpoint *ang);
-// t_dpoint	ft_rot_dpoint(t_dpoint *v, t_oxyz *oxyz);
-// void	ft_ret_zoom_xyz(t_vektr *ox, t_param *vis);
-// void	ft_change_points5(t_param *param, t_vektr *p);
-
-// /*
-// **	images.c
-// */
-// int		ft_create_img(t_pict *pic, void *mlx, int width, int heigth);
-// t_vis	*ft_create_mlx(int width, int heigth, char *name);
-// int		ft_not_need_print(t_line *line, t_pict *pic);
-// int		ft_put_pixel_to_img2(t_pict *pic, t_point *p, int color);
-// int		ft_put_pixel_to_img(t_pict *pic, t_point *p, int color);
-// void	ft_destroy_img(t_pict *pic);
-// void	ft_clear_image(t_pict *pic);
-// void	ft_save_image(t_pict *pic);
-// void	ft_return_image(t_pict *pic);
-// t_vis	*ft_destroy_mlx(t_vis **vis);
+/*
+**	images.c
+*/
+int		ft_create_img(t_pict *pic, void *mlx, int width, int heigth);
+t_vis	*ft_create_mlx(int width, int heigth, char *name);
+int		ft_not_need_print(t_line *line, t_pict *pic);
+int		ft_put_pixel_to_img2(t_pict *pic, t_point *p, int color);
+int		ft_put_pixel_to_img(t_pict *pic, t_point *p, int color);
+void	ft_destroy_img(t_pict *pic);
+void	ft_clear_image(t_pict *pic);
+void	ft_save_image(t_pict *pic);
+void	ft_return_image(t_pict *pic);
+t_vis	*ft_destroy_mlx(t_vis **vis);
 
 
-// /*
-// **	lines_vektrs.c
-// */
-// t_vektr	*ft_new_vektor2(REAL x, REAL y, REAL z, int color);
-// t_vektr	*ft_add_vektor2(void *ptr, t_point *p, int color);
-// t_line	*ft_new_line(t_vektr *p1, t_vektr *p2, int color);
-// void	ft_add_line(t_line **begin, t_vektr *p1, t_vektr *p2, int color);
-// void	ft_del_vektor(t_vektr **begin);
-// void	ft_del_lines(t_line **begin);
-// void	draw_line_img_lower_452(t_line *line, t_point *p, t_pict *pic, int grad);
-// void	draw_line_img_over_452(t_line *line, t_point *p, t_pict *pic, int grad);
-// void	draw_line_img2(t_line *line, t_pict *pic, int grad);
+/*
+**	lines_vektrs.c
+*/
+void	draw_line_img_lower(t_line *line, t_point *p, t_pict *pic, int grad);
+void	draw_line_img_over(t_line *line, t_point *p, t_pict *pic, int grad);
+void	draw_line_img(t_line *line, t_pict *pic, int grad);
 // /*
 // **	poligons.c
 // */
@@ -186,12 +190,12 @@ typedef enum	e_rain
 // void	ft_print_plgn(t_plgn *plgn, t_pict *pic, int grad);
 // void	ft_print_poligons(t_plgn *plgn, t_vektr *points, t_pict *pic, t_param *param);
 // void	ft_prepare_plgn_for_printing(t_plgn *plgn, t_param *param);
-// /*
-// **	keys.c
-// */
-// int		ft_rotate_and_csale(t_param *vis, int key);
-// int		ft_shift(t_param *vis, int key);
-// int		deal_key(int key, void *param);
+/*
+**	keys.c
+*/
+int		ft_rotate_and_csale(t_param *vis, int key);
+int		ft_shift(t_param *vis, int key);
+int		ft_deal_key(int key, void *parametrs);
 
 /*
 **	point.c
