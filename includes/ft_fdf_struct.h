@@ -85,11 +85,18 @@ typedef struct		s_param
 {
 	int				cam_x;
 	int				cam_y;
-	int				pause;
+	int				target_x;
+	int				target_y;
+
+	int				perspective;
 	int				exit;
+
 	int				is_points_change;
 	int				grad;
 	double			len;
+	struct s_vektr	*act_p;
+	struct s_line	*act_l;
+	struct s_dpoint	center;
 	struct s_dpoint	light;
 	struct s_dpoint	ang;
 	struct s_dpoint	cos;

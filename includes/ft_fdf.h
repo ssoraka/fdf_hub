@@ -50,8 +50,8 @@
 
 #define MSG_ERROR1 "Malloc error\n"
 
-
-
+#define LEFT_BUTTON 1
+#define SPEED 10
 
 /*
 **	images
@@ -156,6 +156,7 @@ void	ft_rotate_xyz(t_oxyz *oxyz, t_dpoint *ang);
 t_dpoint	ft_rot_dpoint(t_dpoint *v, t_oxyz *oxyz);
 void	ft_ret_zoom_xyz(t_vektr *ox, t_param *vis);
 void	ft_change_points5(t_param *param, t_vektr *p);
+void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero);
 
 /*
 **	images.c

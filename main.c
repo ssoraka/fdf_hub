@@ -50,31 +50,107 @@ void	ft_rotate_all_points(t_arr *points, t_pict *pic, t_param *param)
 	}
 }
 
+int		ft_move_camera(t_param *param)
+{
+	int dx[2];
+	int dy[2];
+	int bigest;
 
-int		ft_key_hook(int key, void *param)
+	if (param->target_x == param->cam_x && param->target_y == param->cam_y)
+		return (FALSE);
+	dx[0] = param->target_x - param->cam_x;
+	dy[0] = param->target_y - param->cam_y;
+
+	dx[1] = ft_max(dx[0], -dx[0]);
+	dy[1] = ft_max(dy[0], -dy[0]);
+	bigest = ft_max(dx[1], dy[1]);
+
+	param->cam_x += (dx[0] * SPEED) / bigest;
+	param->cam_y += (dy[0] * SPEED) / bigest;
+	if (dx[1] <= SPEED)
+		param->cam_x = param->target_x;
+	if (dy[1] <= SPEED)
+		param->cam_y = param->target_y;
+	return (TRUE);
+}
+
+int		ft_mouse_on_window(t_param *param, int x, int y)
+{
+	if (x < 0 || y < 0 || x >= CONST_WIDTH || y >= CONST_HEINTH)
+		return (FALSE);
+	return (TRUE);
+}
+
+int		ft_mouse_hook(int button, int x, int y, void *parameters)
+{
+	t_all *all;
+	t_param *param;
+
+	all = (t_all *)parameters;
+	param = &all->vis.param;
+
+	if (param->exit)
+		return (0);
+	if (button == LEFT_BUTTON && ft_mouse_on_window(param, x, y))
+	{
+		if (!param->active)
+		{
+			if (!ft_find_closed_points(&all->vis.pic, param, x, y))
+			{
+				param->target_x = x;
+				param->target_y = y;
+			}
+
+		}
+		else
+			ft_move_active_point(param, x, y);
+		param->is_points_change = TRUE;
+	}
+
+	return (0);
+}
+/*
+нужно сделать так, чтоб прои движении курсора определялась ближайшая точка
+в пределахуказанного радиуса
+эта точка становится подсвечивается
+иначе ищутся ближайшие линии и подсвечивается
+при клике мышкой подсвечивающийся объект доступен изменению
+
+выбранную линию можно удалять
+точку передвигать
+*/
+int		ft_loop_hook(void *param)
 {
 	t_all *all;
 	t_vis *vis;
 
 	all = (t_all *)param;
 	vis = all->vis;
-	if (ft_deal_key(key, &vis->param) == FAIL)
-		ft_exit(all, NULL);
 
+	if (vis->param.exit)
+		return (0);
+	if (ft_move_camera(&vis->param))
+		vis->param.is_points_change = TRUE;
+	if (vis->param.is_points_change)
+	{
+		mlx_clear_window(vis->mlx, vis->win);
+		ft_clear_image(&(vis->pic));
 
-	mlx_clear_window(vis->mlx, vis->win);
-	ft_clear_image(&(vis->pic));
+		ft_rotate_all_points(all->points, &(vis->pic), &(vis->param));
+		ft_print_all_lines(all->lines, &(vis->pic), &(vis->param));
 
-	ft_rotate_all_points(all->points, &(vis->pic), &(vis->param));
-	ft_print_all_lines(all->lines, &(vis->pic), &(vis->param));
-	//ft_memcpy((void *)vis->pic.addr, (void *)vis->pic.index, vis->pic.count_byte);
+		if (vis->param.act_p)
+			circle(&(vis->pic), vis->param.act_p, 10, COLOR_RED);
+		if (vis->param.act_l)
+			draw_line_img(vis->param.act_l, &(vis->pic), FALSE);
+		//ft_memcpy((void *)vis->pic.addr, (void *)vis->pic.index, vis->pic.count_byte);
+	}
+	else
+		ft_return_image(vis->pic);
 
 	mlx_put_image_to_window(vis->mlx, vis->win, vis->pic.img, 0, 0);
-
 	return (0);
 }
-
-
 
 
 void ft_print_points(void *elem, void *param)
@@ -122,7 +198,7 @@ void	ft_exit(t_all *all, char *error_message)
 	exit(0);
 }
 
-int main()
+int		main(int argc, char **argv)
 {
 	t_all all;
 
@@ -136,12 +212,12 @@ int main()
 	ft_for_each_elem(all.lines, &ft_print_lines, NULL);
 	// ft_shift_points_to_center(points);
 	// ft_lines_from_points(&begin_line, begin_point);
-	
-	mlx_hook(all.vis->win, 2, 0, ft_key_hook, (void *)&all);
+
+	mlx_hook(all.vis->win, 2, 0, ft_deal_key, (void *)&all->vis.param);
+	mlx_mouse_hook(all.vis->win, ft_mouse_hook, (void *)&all);
+	mlx_loop_hook(all.vis->mlx, ft_loop_hook, (void *)&all);
 	mlx_loop(all.vis->mlx);
 
 	ft_exit(&all, NULL);
 	return (0);
 }
-
-
