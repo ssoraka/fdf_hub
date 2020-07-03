@@ -21,12 +21,13 @@ void	ft_init_params(t_param *param)
 {
 	param->cam_x = CAM_X;
 	param->cam_y = CAM_Y;
+	param->target_x = CAM_X;
+	param->target_y = CAM_Y;
 	param->len = CONST_LEN;
-	param->ang.z = M_PI;
-	param->pause = 1;
-	param->light.x = 0.5;
-	param->light.y = -1;
-	param->light.z = 1;
+	// param->light.x = 0.5;
+	// param->light.y = -1;
+	// param->light.z = 1;
+	param->is_points_change = TRUE;
 	ft_create_xyz(&(param->oxyz));
 }
 

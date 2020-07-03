@@ -64,10 +64,41 @@ int		ft_rotate_and_csale(t_param *vis, int key)
 	else
 		return (FALSE);
 	ft_rotate_xyz(&(vis->oxyz), &(vis->ang));
-	vis->cos.y = ft_vekt_cos(vis->oxyz.oy, vis->light);
-	vis->cos.x = ft_vekt_cos(vis->oxyz.ox, vis->light);
-	vis->cos.z = ft_vekt_cos(vis->oxyz.oz, vis->light);
-	printf("%lf_%lf_%lf\n", vis->cos.y, vis->cos.x, vis->cos.z);
+	// vis->cos.y = ft_vekt_cos(vis->oxyz.oy, vis->light);
+	// vis->cos.x = ft_vekt_cos(vis->oxyz.ox, vis->light);
+	// vis->cos.z = ft_vekt_cos(vis->oxyz.oz, vis->light);
+	// printf("%lf_%lf_%lf\n", vis->cos.y, vis->cos.x, vis->cos.z);
+	return (TRUE);
+}
+
+
+
+
+
+int		ft_csale_picture(t_param *vis, int button, int x, int y)
+{
+	if (button == MIDDLE_FORW_BUTTON && vis->len < MAX_SCALE)
+		vis->len *= CAM_SCALE;
+	else if (button == MIDDLE_BACK_BUTTON && vis->len > MIN_SCALE)
+		vis->len /= CAM_SCALE;
+	else if (button == LEFT_BUTTON)
+	{
+		ft_fill_point(&vis->first_pos, y, x, 0);
+		vis->left_button_press = TRUE;
+	}
+	else if (button == RIGHT_BUTTON)
+	{
+		ft_fill_point(&vis->pos, y, x, 0);
+		vis->right_button_press = TRUE;
+	}
+	else
+		return (FALSE);
+
+	ft_rotate_xyz(&(vis->oxyz), &(vis->ang));
+	// vis->cos.y = ft_vekt_cos(vis->oxyz.oy, vis->light);
+	// vis->cos.x = ft_vekt_cos(vis->oxyz.ox, vis->light);
+	// vis->cos.z = ft_vekt_cos(vis->oxyz.oz, vis->light);
+	// printf("%lf_%lf_%lf\n", vis->cos.y, vis->cos.x, vis->cos.z);
 	return (TRUE);
 }
 
@@ -75,13 +106,13 @@ int		ft_rotate_and_csale(t_param *vis, int key)
 int		ft_shift(t_param *vis, int key)
 {
 	if (key == KEY_RIGHT)
-		vis->cam_x += CAM_SHIFT;
+		vis->target_x += CAM_SHIFT;
 	else if (key == KEY_LEFT)
-		vis->cam_x -= CAM_SHIFT;
+		vis->target_x -= CAM_SHIFT;
 	else if (key == KEY_UP)
-		vis->cam_y -= CAM_SHIFT;
+		vis->target_y -= CAM_SHIFT;
 	else if (key == KEY_DOWN)
-		vis->cam_y += CAM_SHIFT;
+		vis->target_y += CAM_SHIFT;
 	else
 		return (FALSE);
 	return (TRUE);
@@ -94,14 +125,15 @@ int		ft_deal_key(int key, void *parametrs)
 
 	printf("\n%d\n", key);
 	param = (t_param *)parametrs;
-	if (ft_rotate_and_csale(param, key) || ft_shift(param, key) || key == KEY_O
-	|| key == KEY_G)
+	if (ft_rotate_and_csale(param, key) || ft_shift(param, key))
 		param->is_points_change = TRUE;
-	if (key == KEY_ESC)
-		return (FAIL);
 	if (key == KEY_P)
-		param->pause = !param->pause;
+		param->perspective++;
+	if (param->perspective == LAST_PERSPECTIVE)
+		param->perspective = NO_PERSPECTIVE;
 	if (key == KEY_G)
 		param->grad = !param->grad;
+	if (key == KEY_ESC)
+		param->exit = TRUE;
 	return (SUCCESS);
 }

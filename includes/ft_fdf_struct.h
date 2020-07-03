@@ -94,9 +94,19 @@ typedef struct		s_param
 	int				is_points_change;
 	int				grad;
 	double			len;
+
+	int				right_button_press;
+	struct s_point	pos;
+
+	int				left_button_press;
+	int				rounds;
+	struct s_point	rot_pos;
+	struct s_point	first_pos;
+
 	struct s_vektr	*act_p;
 	struct s_line	*act_l;
 	struct s_dpoint	center;
+
 	struct s_dpoint	light;
 	struct s_dpoint	ang;
 	struct s_dpoint	cos;

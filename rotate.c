@@ -76,6 +76,7 @@ void	ft_rotate_xyz(t_oxyz *oxyz, t_dpoint *ang)
 }
 
 
+
 t_dpoint	ft_rot_dpoint(t_dpoint *v, t_oxyz *oxyz)
 {
 	t_dpoint rot_v;
@@ -107,9 +108,8 @@ void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero)
 	t_dpoint rot_p;
 
 	ft_fill_dpoint(&rot_p, p->abs.y - zero->y, p->abs.x - zero->x, p->abs.z - zero->z);
-	rot_p = ft_rot_dpoint(&p->abs, &param->oxyz);
-	ft_fill_dpoint(&rot_p, rot_p.y + zero->y, rot_p.x + zero->x, rot_p.z + zero->z);
-	p->zoom.x = (int)(rot_p.x * param->len) + param->cam_x;
-	p->zoom.y = (int)(rot_p.y * param->len) + param->cam_y;
-	p->zoom.z = (int)(rot_p.z * param->len);
+	rot_p = ft_rot_dpoint(&rot_p, &param->oxyz);
+	p->zoom.x = (int)((rot_p.x + zero->x) * param->len) + param->cam_x;
+	p->zoom.y = (int)((rot_p.y + zero->y) * param->len) + param->cam_y;
+	p->zoom.z = (int)((rot_p.z + zero->z) * param->len);
 }

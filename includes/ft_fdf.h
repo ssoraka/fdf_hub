@@ -48,19 +48,28 @@
 #define UP_COLOR 0xFF0000
 #define DOWN_COLOR 0xFF
 
+#define RED_COLOR 0xFF0000
+
 #define MSG_ERROR1 "Malloc error\n"
 
 #define LEFT_BUTTON 1
-#define SPEED 10
+#define RIGHT_BUTTON 2
+#define MIDDLE_BUTTON 3
+#define MIDDLE_FORW_BUTTON 4
+#define MIDDLE_BACK_BUTTON 5
+
+
+#define SPEED 5
+#define ROTATE_ANGLE 0.05 / 180.0
 
 /*
 **	images
 */
-#define CONST_LEN 1000
+#define CONST_LEN 100
 #define CONST_WIDTH 2000
 #define CONST_HEINTH 1360
-#define CAM_X 1200
-#define CAM_Y 1100
+#define CAM_X (CONST_WIDTH / 2)
+#define CAM_Y (CONST_HEINTH / 2)
 //#define RADIUS (DELTA * CONST_LEN * 0.7)
 #define RADIUS 3
 
@@ -69,17 +78,16 @@
 
 
 
-typedef enum	e_fluids
+typedef enum	e_persp
 {
-	//EMPTY = 0,
-	WATER = 1,
+	NO_PERSPECTIVE,
 	WATER2,
 	MAGMA,
 	MAGMA2,
 	BLOB,
 	OBSTCL,
-	FLUIDS
-}				t_fluids;
+	LAST_PERSPECTIVE
+}				t_persp;
 
 typedef enum	e_print
 {
@@ -149,6 +157,7 @@ void	circle(t_pict *pic, t_vektr *center, int radius, int color_code);
 /*
 **	rotate.c
 */
+void	ft_rotate_xyz_around_xy(t_oxyz *oxyz, t_dpoint *ang);
 void	ft_norm_vektor(t_dpoint *vek);
 void	ft_rotate_vek_around_vek_by_ang(t_dpoint *ox, t_dpoint *oy, double ang);
 void	ft_change_points(t_param *vis, t_vektr *p);
@@ -198,6 +207,7 @@ void	draw_line_img(t_line *line, t_pict *pic, int grad);
 int		ft_rotate_and_csale(t_param *vis, int key);
 int		ft_shift(t_param *vis, int key);
 int		ft_deal_key(int key, void *parametrs);
+int		ft_csale_picture(t_param *vis, int button, int x, int y);
 
 /*
 **	point.c
