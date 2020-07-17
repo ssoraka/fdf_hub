@@ -37,6 +37,13 @@ void	ft_create_xyz(t_oxyz *oxyz)
 	ft_fill_dpoint(&(oxyz->oz), 0.0, 0.0, 1.0);
 }
 
+void	ft_rotate_xyz_around_v(t_oxyz *oxyz, t_dpoint *v, double ang)
+{
+    ft_rotate_vek_around_vek_by_ang(&(oxyz->oy), v, ang);
+    ft_rotate_vek_around_vek_by_ang(&(oxyz->ox), v, ang);
+    ft_rotate_vek_around_vek_by_ang(&(oxyz->oz), v, ang);
+}
+
 REAL	ft_dot_dpoints(t_dpoint *a, t_dpoint *b)
 {
 	return (a->x * b->x + a->y * b->y + a->z * b->z);

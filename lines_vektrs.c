@@ -12,77 +12,65 @@
 
 #include "./includes/ft_fdf.h"
 
-void	draw_line_img_lower(t_line *line, t_point *p, t_pict *pic, int grad)
+void	draw_line_img_lower(t_line *line, t_pict *pic, int grad, t_shape *shape)
 {
-	t_point error;
-	int color;
+    t_point p;
+    t_point error;
 
+    ft_fill_point(&p, line->p1->zoom.y, line->p1->zoom.x, line->p1->zoom.z);
 	ft_fill_point(&error, 0, 0, 0);
-	color = line->color;
-	while (p->x != line->p2->zoom.x)
+	while (p.x != line->p2->zoom.x)
 	{
 		if (grad)
-			color = ft_set_color_to_point(line, p, 1);
-		ft_put_pixel_to_img2(pic, p, color);
-		//printf("%d\n", p->z);
+            shape->color = ft_set_color_to_point(line, &p, 1);
+		shape->print(pic, &p, shape);
 		error.y = error.y + line->delta.y;
 		if (2 * error.y >= line->delta.x)
 		{
-			p->y += line->dir.y;
+			p.y += line->dir.y;
 			error.y = error.y - line->delta.x;
 		}
-		p->z = ft_int_interpolation(p->x - line->p1->zoom.x, line->p2->zoom.x - line->p1->zoom.x, line->p1->zoom.z, line->p2->zoom.z);
-		/*error.z = error.z + line->delta.z;
-		if (2 * error.z >= line->delta.x)
-		{
-			p->z += line->dir.z;
-			error.z = error.z - line->delta.x;
-		}*/
-
-		p->x += line->dir.x;
+		p.z = ft_int_interpolation(p.x - line->p1->zoom.x, line->p2->zoom.x - line->p1->zoom.x, line->p1->zoom.z, line->p2->zoom.z);
+		p.x += line->dir.x;
 	}
 	if (grad)
-		color = line->p2->color;
-	ft_put_pixel_to_img2(pic, &(line->p2->zoom), color);
+        shape->color = line->p2->color;
+    shape->print(pic, &(line->p2->zoom), shape);
 }
 
 
-void	draw_line_img_over(t_line *line, t_point *p, t_pict *pic, int grad)
+void	draw_line_img_over(t_line *line, t_pict *pic, int grad, t_shape *shape)
 {
+    t_point p;
 	t_point error;
-	int color;
 
+    ft_fill_point(&p, line->p1->zoom.y, line->p1->zoom.x, line->p1->zoom.z);
 	ft_fill_point(&error, 0, 0, 0);
-	color = line->color;
-	while (p->y != line->p2->zoom.y)
+	while (p.y != line->p2->zoom.y)
 	{
 		if (grad)
-			color = ft_set_color_to_point(line, p, 0);
-		ft_put_pixel_to_img2(pic, p, color);
+            shape->color = ft_set_color_to_point(line, &p, 0);
+        shape->print(pic, &p, shape);
 		error.x = error.x + line->delta.x;
 		if (2 * error.x >= line->delta.y)
 		{
-			p->x += line->dir.x;
+			p.x += line->dir.x;
 			error.x = error.x - line->delta.y;
 		}
-		p->z = ft_int_interpolation(p->y - line->p1->zoom.y, line->p2->zoom.y - line->p1->zoom.y, line->p1->zoom.z, line->p2->zoom.z);
-		/*error.z = error.z + line->delta.z;
-		if (2 * error.z >= line->delta.y)
-		{
-			p->z += line->dir.z;
-			error.z = error.z - line->delta.y;
-		}*/
-		p->y +=line->dir.y;
+		p.z = ft_int_interpolation(p.y - line->p1->zoom.y, line->p2->zoom.y - line->p1->zoom.y, line->p1->zoom.z, line->p2->zoom.z);
+		p.y +=line->dir.y;
 	}
 	if (grad)
-		color = line->p2->color;
-	ft_put_pixel_to_img2(pic, &(line->p2->zoom), color);
+        shape->color = line->p2->color;
+    shape->print(pic, &(line->p2->zoom), shape);
 }
+
 
 
 void	draw_line_img(t_line *line, t_pict *pic, int grad)
 {
 	t_point p;
+	t_shape shape;
 
 	if (ft_not_need_print(line, pic))
 		return ;
@@ -95,9 +83,12 @@ void	draw_line_img(t_line *line, t_pict *pic, int grad)
 	line->delta.y = line->dir.y * (line->p2->zoom.y - p.y);
 	line->delta.x = line->dir.x * (line->p2->zoom.x - p.x);
 	line->delta.z = line->dir.z * (line->p2->zoom.z - p.z);
+    ft_init_shape(&shape, POINT);
+    shape.color = line->color;
+    shape.index = line->index;
 	//printf("%d_%d\n", p.z, p.z);
 	if (line->delta.x >= line->delta.y)
-		draw_line_img_lower(line, &p, pic, grad);
+		draw_line_img_lower(line, pic, grad, &shape);
 	else
-		draw_line_img_over(line, &p, pic, grad);
+		draw_line_img_over(line, pic, grad, &shape);
 }

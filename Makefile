@@ -1,60 +1,65 @@
-#******************************************************************************#
+# **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ssoraka <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: rfork <rfork@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/03/11 12:49:25 by ssoraka           #+#    #+#              #
-#    Updated: 2019/03/11 20:57:23 by ssoraka          ###   ########.fr        #
+#    Created: 2020/01/05 17:09:20 by rfork             #+#    #+#              #
+#    Updated: 2020/01/13 20:23:37 by dovran           ###   ########.fr        #
 #                                                                              #
-#******************************************************************************#
+# **************************************************************************** #
 
-NAME1 = a.out
-NAME2 = checker
-NAME3 = rand_int_gen
-SRC1 = /Users/ssoraka/Desktop/days/Libft/libft/libft.a
-SRC2 = /Users/ssoraka/Desktop/days/Libft/libft/*.o
+GCC = gcc -g -MMD
+NAME = fdf
+SRCS = color_interpolation.c       get_pixel.c  lines_vektrs.c  points.c        rotate.c \
+       create_lines_from_points.c  images.c     main.c         \
+       create_points_from_file.c   keys.c       print_shapes.c
+OBJS = $(SRCS:.c=.o)
+DEPENDS = ${OBJS:.o=.d} 
+HEAD = -I ./includes/
 
-C_FLAGS = -g
+ifeq ($(OS),Windows_NT)
+	detected_OS := Windows
+else
+	detected_OS := $(shell uname)
+endif
+ifeq ($(detected_OS),Linux)
+	MAKES := ./libft/libft.a  libs/minilibx/libmlx.a
+	LIBMAKE := libs/minilibx
+	LIB :=  -L libft -lft -L libs/minilibx -lmlx_Linux -lXext -lX11 -lm
+	HEAD += -I./libs/minilibx/
+endif
+ifeq ($(detected_OS),Darwin) 
+	MAKES = ./libs/libft.a ./libs/minilibx_macos/libmlx.a 
+	LIBMAKE := libs/minilibx_macos
+	LIB := -L libft -lft -L libs/minilibx_macos -lmlx -framework OpenGL -framework Appkit
+	HEAD += -I./libs/minilibx_macos/
+endif
 
-SRC_DIR = src/
-OBJ_DIR = obj/
-COM_DIR = common/
-LEM_DIR = lem-in/
-VIS_DIR = visu-hex/
+.PHONY: clean fclean re
+all: $(NAME)
 
-FDF_HEADER = -I ./includes/
-LIBCOL = collections/arr.c
-LIBCOL_HEADER = -I ./collections/
-LIBFT = ../libft/libft.a
-LIBFT_HEADER = -I ./../libft/
-OBJ = main.c points.c create_lines_from_points.c create_points_from_file.c images.c keys.c rotate.c print_shapes.c \
-lines_vektrs.c color_interpolation.c
-MLX_LIB = -L /usr/local/lib/ -lmlx
-MLX_HEAD = -I /usr/local/include
-FRAMEWORK = -framework OpenGL -framework AppKit -framework OpenCL
+%.o: %.c
+	$(GCC) -c  $(HEAD) $<
 
-all:
-	##gcc $(C_FLAGS) -o a.out main.c libft.a $(MLX_LIB) $(MLX_HEAD) $(FRAMEWORK)
-	gcc $(MLX_HEAD) $(OBJ) $(LIBCOL) $(LIBFT) $(FDF_HEADER) $(LIBFT_HEADER) $(LIBCOL_HEADER) $(MLX_LIB) $(FRAMEWORK)
-	##gcc main.c libft.a -L /usr/local/lib/ -lmlx -I /usr/local/include -framework OpenGL  -framework AppKit
+$(MAKES):
+	make -C  ./libft
+	make -sC  $(LIBMAKE)
 
-	./$(NAME1)
-	@##./$(NAME1) > command.txt
+-include ${DEPENDS}
 
-test:
-	gcc -o $(NAME1) test.c solver.c libft.a
-	./$(NAME1)
-
-
-norm:
-	norminette -R CheckForbiddenSourceHeader
+$(NAME): $(MAKES) $(OBJS)
+	$(GCC) $(OBJS)  $(LIB) $(HEAD)  -o $(NAME)
 
 clean:
-	rm -rf *.o
+	rm -f $(OBJS)
+	rm -f *.d
+	make -C libft clean
 
 fclean: clean
-	rm -rf *.o
+	rm -f $(NAME)
+	make -C libft fclean
+	make -C $(LIBMAKE) clean
 
 re: fclean all

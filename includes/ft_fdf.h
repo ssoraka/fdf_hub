@@ -15,7 +15,8 @@
 
 
 #include "../libft/libft.h"
-#include "../collections/collections_header.h"
+#include "ft_buttons.h"
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -39,6 +40,9 @@
 #define COLOR_DOWN 0x704214
 //#define MAX_POINT 50
 
+#define DEFAULT_LINE_COLOR 0xFF00
+
+#define BACKGROUND_COLOR 0x8F8F8F
 
 #define WHITE_COLOR 0xFFFFFF
 #define BLACK_COLOR 0x0
@@ -49,17 +53,12 @@
 #define DOWN_COLOR 0xFF
 
 #define RED_COLOR 0xFF0000
+#define ACTIVE_COLOR RED_COLOR
 
 #define MSG_ERROR1 "Malloc error\n"
 
-#define LEFT_BUTTON 1
-#define RIGHT_BUTTON 2
-#define MIDDLE_BUTTON 3
-#define MIDDLE_FORW_BUTTON 4
-#define MIDDLE_BACK_BUTTON 5
 
-
-#define SPEED 5
+#define SPEED 10
 #define ROTATE_ANGLE 0.05 / 180.0
 
 /*
@@ -73,8 +72,8 @@
 //#define RADIUS (DELTA * CONST_LEN * 0.7)
 #define RADIUS 3
 
-
-
+#define DEFAULT_INDEX 0
+#define MIN_INTEGER 0x80000000
 
 
 
@@ -109,12 +108,12 @@ typedef enum	e_column
 	COLUMN_COUNT
 }				t_column;
 
-typedef enum	e_rain
+typedef enum	e_form
 {
-	RAIN_FALSE,
-	NEED_STOP_PRINT_FOR_RAIN,
-	RAIN_ACTIVATE,
-}				t_rain;
+	POINT,
+	RECTANGLE,
+	CIRCLE
+}				t_form;
 
 
 
@@ -126,12 +125,10 @@ void	ft_exit(t_all *all, char *error_message);
 /*
 **	create_lines_from_points.c
 */
-int		ft_create_right_line(t_vektr *curr, t_vektr *next, t_line *line, t_arr *lines);
-int		ft_create_down_line(t_vektr *curr, t_vektr *down, t_line *line, t_arr *lines);
-int		ft_create_lines_from_points(t_arr *points, t_arr *lines);
+int		ft_create_pair_from_points(t_arr *points, t_arr *lines);
 
 /*
-**	create_lines_from_points.c
+**	create_points_from_points.c
 */
 int		ft_get_color_from_string(char *str);
 int		ft_string_to_points(char *str, t_arr *points, int y);
@@ -150,9 +147,7 @@ int		ft_int_interpolation(int y, int delta_y, int x1, int x2);
 /*
 **	print_shapes.c
 */
-void	ft_print_rect(t_pict *pic, t_point *center, int len, int color);
-void	plot_circle(t_pict *pic, t_point *p, t_point *center, int color_code);
-void	circle(t_pict *pic, t_vektr *center, int radius, int color_code);
+void    ft_init_shape(t_shape *shape, t_form form);
 
 /*
 **	rotate.c
@@ -173,8 +168,7 @@ void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero);
 int		ft_create_img(t_pict *pic, void *mlx, int width, int heigth);
 t_vis	*ft_create_mlx(int width, int heigth, char *name);
 int		ft_not_need_print(t_line *line, t_pict *pic);
-int		ft_put_pixel_to_img2(t_pict *pic, t_point *p, int color);
-int		ft_put_pixel_to_img(t_pict *pic, t_point *p, int color);
+
 void	ft_destroy_img(t_pict *pic);
 void	ft_clear_image(t_pict *pic);
 void	ft_save_image(t_pict *pic);
@@ -185,8 +179,6 @@ t_vis	*ft_destroy_mlx(t_vis **vis);
 /*
 **	lines_vektrs.c
 */
-void	draw_line_img_lower(t_line *line, t_point *p, t_pict *pic, int grad);
-void	draw_line_img_over(t_line *line, t_point *p, t_pict *pic, int grad);
 void	draw_line_img(t_line *line, t_pict *pic, int grad);
 // /*
 // **	poligons.c
@@ -207,7 +199,7 @@ void	draw_line_img(t_line *line, t_pict *pic, int grad);
 int		ft_rotate_and_csale(t_param *vis, int key);
 int		ft_shift(t_param *vis, int key);
 int		ft_deal_key(int key, void *parametrs);
-int		ft_csale_picture(t_param *vis, int button, int x, int y);
+int		ft_csale_picture(t_param *vis, int button, t_point *mouse);
 
 /*
 **	point.c
@@ -215,10 +207,14 @@ int		ft_csale_picture(t_param *vis, int button, int x, int y);
 void	ft_fill_point(t_point *p, int y, int x, int z);
 void	ft_fill_dpoint(t_dpoint *p, REAL y, REAL x, REAL z);
 void	ft_create_xyz(t_oxyz *oxyz);
+void	ft_rotate_xyz_around_v(t_oxyz *oxyz, t_dpoint *v, double ang);
 t_dpoint	ft_ret_norm(t_dpoint *a, t_dpoint *b, t_dpoint *c);
 REAL	ft_vekt_cos(t_dpoint a, t_dpoint b);
 REAL	ft_dot_dpoints(t_dpoint *a, t_dpoint *b);
 
-
+/*
+**	get_pixel.c
+*/
+int     ft_get_nearest_id(t_pict *pic, t_point *pos);
 
 #endif

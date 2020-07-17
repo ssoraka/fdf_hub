@@ -13,6 +13,7 @@
 #ifndef FT_FDF_STRUCT_H
 # define FT_FDF_STRUCT_H
 
+# include "ft_fdf.h"
 
 typedef double REAL;
 
@@ -40,6 +41,7 @@ typedef struct		s_vektr
 typedef struct		s_line
 {
 	int color;
+    int index;
 	struct s_point dir;
 	struct s_point delta;
 	struct s_vektr *p1;
@@ -95,6 +97,9 @@ typedef struct		s_param
 	int				grad;
 	double			len;
 
+    struct s_point	mouse;
+    int             near_id;
+
 	int				right_button_press;
 	struct s_point	pos;
 
@@ -103,9 +108,9 @@ typedef struct		s_param
 	struct s_point	rot_pos;
 	struct s_point	first_pos;
 
-	struct s_vektr	*act_p;
-	struct s_line	*act_l;
-	struct s_dpoint	center;
+    int             active_id;
+	struct s_vektr	*act[2];
+	struct s_vektr	*centr;
 
 	struct s_dpoint	light;
 	struct s_dpoint	ang;
@@ -129,5 +134,13 @@ typedef struct		s_all
 	struct s_vis	*vis;
 }					t_all;
 
+typedef struct		s_shape
+{
+    int             color;
+    int             index;
+    int             len;
+    int             form;
+    int     	    (*print)(t_pict *, t_point *, struct s_shape *);
+}					t_shape;
 
 #endif

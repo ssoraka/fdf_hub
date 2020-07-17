@@ -34,21 +34,22 @@ void	ft_init_params(t_param *param)
 
 void	ft_clear_image(t_pict *pic)
 {
-	ft_memset8((void *)pic->addr, 0xC0FFFFFF, pic->count_byte);
-	ft_memset8((void *)pic->z_buffer, 0x8FFFFFFF, pic->count_byte);
+    ft_memset8((void *)pic->index, DEFAULT_INDEX, pic->count_byte);
+	ft_memset8((void *)pic->addr, BACKGROUND_COLOR, pic->count_byte);
+	ft_memset8((void *)pic->z_buffer, MIN_INTEGER, pic->count_byte);
 }
 
-void	ft_return_image(t_pict *pic)
-{
-	ft_memcpy8((void *)pic->addr, (void *)pic->addr_copy, pic->count_byte);
-	ft_memcpy8((void *)pic->z_buffer, (void *)pic->z_buffer_copy, pic->count_byte);
-}
+//void	ft_return_image(t_pict *pic)
+//{
+//	ft_memcpy8((void *)pic->addr, (void *)pic->addr_copy, pic->count_byte);
+//	ft_memcpy8((void *)pic->z_buffer, (void *)pic->z_buffer_copy, pic->count_byte);
+//}
 
-void	ft_save_image(t_pict *pic)
-{
-	ft_memcpy8((void *)pic->addr_copy, (void *)pic->addr, pic->count_byte);
-	ft_memcpy8((void *)pic->z_buffer_copy, (void *)pic->z_buffer, pic->count_byte);
-}
+//void	ft_save_image(t_pict *pic)
+//{
+//	ft_memcpy8((void *)pic->addr_copy, (void *)pic->addr, pic->count_byte);
+//	ft_memcpy8((void *)pic->z_buffer_copy, (void *)pic->z_buffer, pic->count_byte);
+//}
 
 int		ft_create_img(t_pict *pic, void *mlx, int width, int heigth)
 {
@@ -66,6 +67,7 @@ int		ft_create_img(t_pict *pic, void *mlx, int width, int heigth)
 		return (FALSE);
 	if (!(pic->index = (int *)ft_memalloc(pic->count_byte)))
 		return (FALSE);
+    ft_clear_image(pic);
 	return (TRUE);
 }
 
@@ -115,32 +117,6 @@ int		ft_not_need_print(t_line *line, t_pict *pic)
 		return (TRUE);*/
 	return (FALSE);
 }
-
-
-int		ft_put_pixel_to_img(t_pict *pic, t_point *p, int color)
-{
-	if (p->x < 0 || p->y < 0 || p->x >= CONST_WIDTH || p->y >= CONST_HEINTH)
-		return (FALSE);
-	pic->addr[p->y * CONST_WIDTH + p->x] = color;
-	return (TRUE);
-}
-
-
-int		ft_put_pixel_to_img2(t_pict *pic, t_point *p, int color)
-{
-	if (p->x < 0 || p->y < 0 || p->x >= CONST_WIDTH || p->y >= CONST_HEINTH)
-		return (FALSE);
-	if (pic->z_buffer[p->y * CONST_WIDTH + p->x] > p->z)
-		return (FALSE);
-	pic->addr[p->y * CONST_WIDTH + p->x] = color;
-	pic->z_buffer[p->y * CONST_WIDTH + p->x] = p->z;
-	if (pic->cell)
-		pic->index[p->y * CONST_WIDTH + p->x] = pic->cell;
-	return (TRUE);
-}
-
-
-
 
 t_vis	*ft_destroy_mlx(t_vis **vis)
 {
