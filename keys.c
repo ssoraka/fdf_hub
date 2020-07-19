@@ -117,6 +117,7 @@ int		ft_deal_key(int key, void *parametrs)
 	t_param *param;
 
 	param = (t_param *)parametrs;
+	printf("%d\n", key);
 	if (ft_rotate_and_csale(param, key) || ft_shift(param, key))
 		param->is_points_change = TRUE;
     else if (key == KEY_P)
