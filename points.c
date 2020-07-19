@@ -37,11 +37,22 @@ void	ft_create_xyz(t_oxyz *oxyz)
 	ft_fill_dpoint(&(oxyz->oz), 0.0, 0.0, 1.0);
 }
 
+void    ft_get_perp_vekt_from_two(t_dpoint *answer, t_dpoint *a, t_dpoint *b)
+{
+    ft_fill_dpoint(answer,
+                   a->z * b->x - a->x * b->z,
+                   a->y * b->z - a->z * b->y,
+                   a->x * b->y - a->y * b->x);
+    ft_normilize_vektor(answer);
+}
+
 void	ft_rotate_xyz_around_v(t_oxyz *oxyz, t_dpoint *v, double ang)
 {
     ft_rotate_vek_around_vek_by_ang(&(oxyz->oy), v, ang);
     ft_rotate_vek_around_vek_by_ang(&(oxyz->ox), v, ang);
     ft_rotate_vek_around_vek_by_ang(&(oxyz->oz), v, ang);
+    ft_get_perp_vekt_from_two(&(oxyz->oz), &(oxyz->ox), &(oxyz->oy));
+    ft_get_perp_vekt_from_two(&(oxyz->oy), &(oxyz->oz), &(oxyz->ox));
 }
 
 REAL	ft_dot_dpoints(t_dpoint *a, t_dpoint *b)
@@ -52,6 +63,16 @@ REAL	ft_dot_dpoints(t_dpoint *a, t_dpoint *b)
 REAL	ft_vektr_len(t_dpoint *a)
 {
 	return (sqrt(ft_dot_dpoints(a, a)));
+}
+
+void	ft_normilize_vektor(t_dpoint *vek)
+{
+    double summ;
+
+    summ = ft_vektr_len(vek);
+    vek->x = vek->x / summ;
+    vek->y = vek->y / summ;
+    vek->z = vek->z / summ;
 }
 
 t_dpoint	ft_ret_norm(t_dpoint *a, t_dpoint *b, t_dpoint *c)

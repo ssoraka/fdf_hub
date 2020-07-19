@@ -153,7 +153,6 @@ void    ft_init_shape(t_shape *shape, t_form form);
 **	rotate.c
 */
 void	ft_rotate_xyz_around_xy(t_oxyz *oxyz, t_dpoint *ang);
-void	ft_norm_vektor(t_dpoint *vek);
 void	ft_rotate_vek_around_vek_by_ang(t_dpoint *ox, t_dpoint *oy, double ang);
 void	ft_change_points(t_param *vis, t_vektr *p);
 void	ft_rotate_xyz(t_oxyz *oxyz, t_dpoint *ang);
@@ -206,11 +205,13 @@ int		ft_csale_picture(t_param *vis, int button, t_point *mouse);
 */
 void	ft_fill_point(t_point *p, int y, int x, int z);
 void	ft_fill_dpoint(t_dpoint *p, REAL y, REAL x, REAL z);
+REAL	ft_vektr_len(t_dpoint *a);
 void	ft_create_xyz(t_oxyz *oxyz);
 void	ft_rotate_xyz_around_v(t_oxyz *oxyz, t_dpoint *v, double ang);
 t_dpoint	ft_ret_norm(t_dpoint *a, t_dpoint *b, t_dpoint *c);
 REAL	ft_vekt_cos(t_dpoint a, t_dpoint b);
 REAL	ft_dot_dpoints(t_dpoint *a, t_dpoint *b);
+void	ft_normilize_vektor(t_dpoint *vek);
 
 /*
 **	get_pixel.c

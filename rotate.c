@@ -16,17 +16,6 @@
 **	избавление от погрешности
 */
 
-void	ft_norm_vektor(t_dpoint *vek)
-{
-	double summ;
-
-	summ = vek->x * vek->x + vek->y * vek->y + vek->z * vek->z;
-	summ = sqrt(summ);
-	vek->x = vek->x / summ;
-	vek->y = vek->y / summ;
-	vek->z = vek->z / summ;
-}
-
 void	ft_rotate_vek_around_vek_by_ang(t_dpoint *ox, t_dpoint *oy, double ang)
 {
 	double cosa;
@@ -51,28 +40,7 @@ void	ft_rotate_vek_around_vek_by_ang(t_dpoint *ox, t_dpoint *oy, double ang)
 	ox->x = temp_x;
 	ox->y = temp_y;
 	ox->z = temp_z;
-	ft_norm_vektor(ox);
-}
-
-
-void	ft_rotate_xyz(t_oxyz *oxyz, t_dpoint *ang)
-{
-	if (ang->z != 0)
-	{
-		ft_rotate_vek_around_vek_by_ang(&(oxyz->oy), &(oxyz->oz), ang->z);
-		ft_rotate_vek_around_vek_by_ang(&(oxyz->ox), &(oxyz->oz), ang->z);
-	}
-	if (ang->x != 0)
-	{
-		ft_rotate_vek_around_vek_by_ang(&(oxyz->oy), &(oxyz->ox), ang->x);
-		ft_rotate_vek_around_vek_by_ang(&(oxyz->oz), &(oxyz->ox), ang->x);
-	}
-	if (ang->y != 0)
-	{
-		ft_rotate_vek_around_vek_by_ang(&(oxyz->ox), &(oxyz->oy), ang->y);
-		ft_rotate_vek_around_vek_by_ang(&(oxyz->oz), &(oxyz->oy), ang->y);
-	}
-	ft_fill_dpoint(ang, 0.0, 0.0, 0.0);
+	ft_normilize_vektor(ox);
 }
 
 
@@ -112,4 +80,27 @@ void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero)
 	p->zoom.x = (int)((rot_p.x + zero->x) * param->len) + param->cam_x;
 	p->zoom.y = (int)((rot_p.y + zero->y) * param->len) + param->cam_y;
 	p->zoom.z = (int)((rot_p.z + zero->z) * param->len);
+}
+
+
+void	ft_rotate_xyz(t_oxyz *oxyz, t_dpoint *ang)
+{
+    if (ang->z != 0)
+    {
+        ft_rotate_vek_around_vek_by_ang(&(oxyz->oy), &(oxyz->oz), ang->z);
+        ft_rotate_vek_around_vek_by_ang(&(oxyz->ox), &(oxyz->oz), ang->z);
+    }
+    if (ang->x != 0)
+    {
+        ft_rotate_vek_around_vek_by_ang(&(oxyz->oy), &(oxyz->ox), ang->x);
+        ft_rotate_vek_around_vek_by_ang(&(oxyz->oz), &(oxyz->ox), ang->x);
+    }
+    if (ang->y != 0)
+    {
+        ft_rotate_vek_around_vek_by_ang(&(oxyz->ox), &(oxyz->oy), ang->y);
+        ft_rotate_vek_around_vek_by_ang(&(oxyz->oz), &(oxyz->oy), ang->y);
+    }
+    ft_fill_dpoint(ang, 0.0, 0.0, 0.0);
+   // ft_get_perp_vekt_from_two(&(oxyz->oz), &(oxyz->ox), &(oxyz->oy));
+   // ft_get_perp_vekt_from_two(&(oxyz->oy), &(oxyz->oz), &(oxyz->ox));
 }
