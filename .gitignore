@@ -1,2 +1,4 @@
-collection/*
+*.o
+*.d
+
 

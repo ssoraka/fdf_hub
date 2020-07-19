@@ -37,7 +37,7 @@ void    ft_print_active(t_pict *pic, t_param *param)
         line.index = param->active_id;
         line.p1 = param->act[0];
         line.p2 = param->act[1];
-        draw_line_img(&line, pic, param->grad);
+        draw_line_img(&line, pic, FALSE);
     }
 }
 
