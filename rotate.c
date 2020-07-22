@@ -77,9 +77,19 @@ void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero)
 
 	ft_fill_dpoint(&rot_p, p->abs.y - zero->y, p->abs.x - zero->x, p->abs.z - zero->z);
 	rot_p = ft_rot_dpoint(&rot_p, &param->oxyz);
-	p->zoom.x = (int)((rot_p.x + zero->x) * param->len) + param->cam_x;
-	p->zoom.y = (int)((rot_p.y + zero->y) * param->len) + param->cam_y;
-	p->zoom.z = (int)((rot_p.z + zero->z) * param->len);
+
+    p->zoom.z = (int)(rot_p.z * param->len);
+
+	int x = (int)(rot_p.x * param->len);// - param->mouse.x;
+    x = x * 2000/(2000 - p->zoom.z);
+    p->zoom.x = x + param->centr->zoom.x;
+
+    int y = (int)(rot_p.y * param->len);// - param->mouse.y;
+    y = y * 2000/(2000 - p->zoom.z);
+    p->zoom.y = y + param->centr->zoom.y;
+    p->zoom.z += param->centr->zoom.z;
+//	p->zoom.y = (int)((rot_p.y + zero->y) * param->len) + param->cam_y;
+//    p->zoom.x = (int)((rot_p.x + zero->x) * param->len) + param->cam_x;
 }
 
 

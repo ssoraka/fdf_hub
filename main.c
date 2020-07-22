@@ -68,15 +68,19 @@ void	ft_rotate_all_points(t_arr *points, t_pict *pic, t_param *param)
 	int i;
 	int count;
 
+    ft_rotate_point_around_point(param, param->centr, &param->centr->abs);
+    param->centr->zoom.x = param->cam_x;
+    param->centr->zoom.y = param->cam_y;
+
 	count = points->elems_used;
 	v = ft_arr_get(points, 0);
-	i = 0;
 
     t_shape shape;
     ft_init_shape(&shape, CIRCLE);
     shape.len = 1;
     shape.color = BACKGROUND_COLOR;
-	while (i < count)
+    i = 0;
+    while (i < count)
 	{
 		// ft_change_points(param, v + i);
 		ft_rotate_point_around_point(param, v + i, &param->centr->abs);
@@ -104,9 +108,9 @@ int		ft_move_camera(t_param *param)
 //    param->cam_x += (dx[0] * SPEED) / bigest;
 //    param->cam_y += (dy[0] * SPEED) / bigest;
 //	if (dx[1] <= SPEED)
-		param->cam_x = param->target_x;
+//		param->cam_x = param->target_x;
 //	if (dy[1] <= SPEED)
-		param->cam_y = param->target_y;
+//		param->cam_y = param->target_y;
 	return (TRUE);
 }
 
@@ -138,6 +142,8 @@ int     ft_activate_nearest_elem(t_all *all, t_param *param)
 
     if (param->near_id == DEFAULT_INDEX)
         return (FALSE);
+    param->cam_x = param->centr->zoom.x;
+    param->cam_y = param->centr->zoom.y;
     param->active_id = param->near_id;
     param->act[0] = NULL;
     param->act[1] = NULL;
@@ -157,6 +163,25 @@ int     ft_activate_nearest_elem(t_all *all, t_param *param)
 }
 
 
+void    ft_try_change_active_point(t_param *param)
+{
+    t_point old;
+
+    if (!param->act[0])
+        return ;
+    param->centr = param->act[0];
+    old.x = param->centr->zoom.x;
+    old.y = param->centr->zoom.y;
+
+    ft_rotate_point_around_point(param, param->centr, &param->centr->abs);
+
+    param->cam_x -= param->centr->zoom.x - old.x;
+    param->cam_y -= param->centr->zoom.y - old.y;
+    param->target_x -= param->centr->zoom.x - old.x;
+    param->target_y -= param->centr->zoom.y - old.y;
+}
+
+
 int		ft_mouse_press(int button, int x, int y, void *parameters)
 {
 	t_all *all;
@@ -171,7 +196,10 @@ int		ft_mouse_press(int button, int x, int y, void *parameters)
 		param->is_points_change = TRUE;
 	if (button == MIDDLE_BUTTON)
 	    if (ft_activate_nearest_elem(all, param))
+        {
+            ft_try_change_active_point(param);
             param->is_points_change = TRUE;
+        }
 	return (0);
 }
 
@@ -256,23 +284,6 @@ int		ft_auto_rotate(t_param *param)
 	return (FALSE);
 }
 
-void    ft_try_change_active_point(t_param *param)
-{
-    t_point old;
-
-    if (!param->act[0])
-        return ;
-    param->centr = param->act[0];
-    old.x = param->centr->zoom.x;
-    old.y = param->centr->zoom.y;
-
-    ft_rotate_point_around_point(param, param->centr, &param->centr->abs);
-
-    param->cam_x -= param->centr->zoom.x - old.x;
-    param->cam_y -= param->centr->zoom.y - old.y;
-    param->target_x -= param->centr->zoom.x - old.x;
-    param->target_y -= param->centr->zoom.y - old.y;
-}
 
 /*
 нужно сделать так, чтоб прои движении курсора определялась ближайшая точка
@@ -298,10 +309,10 @@ int		ft_loop_hook(void *param)
 	if (vis->param.is_points_change)
 	{
         ft_clear_image(&(vis->pic));
+//        ft_try_change_active_point(&vis->param);
         ft_rotate_all_points(all->points, &(vis->pic), &(vis->param));
         ft_print_all_lines(all->lines, &(vis->pic), &(vis->param));
         ft_print_active(&(vis->pic), &(vis->param));
-        ft_try_change_active_point(&vis->param);
 
 //		ft_memcpy((void *)vis->pic.addr, (void *)vis->pic.index, vis->pic.count_byte);
 	}
