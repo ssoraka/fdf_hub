@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "./includes/ft_fdf.h"
-#include "X11/X.h"
+
 
 #define ABS(nbr) ((nbr) >= 0 ? (nbr) : (-1) * (nbr))
 
@@ -374,10 +374,10 @@ int		main(int argc, char **argv)
 	// ft_shift_points_to_center(points);
 	// ft_lines_from_points(&begin_line, begin_point);
 
-    mlx_hook(all.vis->win, 2, KeyPressMask, ft_deal_key, (void *)&all.vis->param);
-	mlx_hook(all.vis->win, 6, PointerMotionMask, ft_mouse_move, (void *)&all);
-    mlx_hook(all.vis->win, 4, ButtonPressMask, ft_mouse_press, (void *)&all);
-	mlx_hook(all.vis->win, 5, ButtonReleaseMask, ft_mouse_release, (void *)&all);
+    mlx_hook(all.vis->win, 2, KEY_PRESS_MASK, ft_deal_key, (void *)&all.vis->param);
+	mlx_hook(all.vis->win, 6, POINTER_MOTION_MASK, ft_mouse_move, (void *)&all);
+    mlx_hook(all.vis->win, 4, BUTTON_PRESS_MASK, ft_mouse_press, (void *)&all);
+	mlx_hook(all.vis->win, 5, BUTTON_RELEASE_MASK, ft_mouse_release, (void *)&all);
 	mlx_loop_hook(all.vis->mlx, ft_loop_hook, (void *)&all);
 	mlx_loop(all.vis->mlx);
 

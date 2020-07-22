@@ -28,6 +28,18 @@
 #include "mlx.h"
 #include "ft_fdf_struct.h"
 
+#if defined(__linux__)
+#include "X11/X.h"
+#define KEY_PRESS_MASK KeyPressMask
+#define POINTER_MOTION_MASK PointerMotionMask
+#define BUTTON_PRESS_MASK ButtonPressMask
+#define BUTTON_RELEASE_MASK ButtonReleaseMask
+#else
+#define KEY_PRESS_MASK 0
+#define POINTER_MOTION_MASK 0
+#define BUTTON_PRESS_MASK 0
+#define BUTTON_RELEASE_MASK 0
+#endif
 
 #define ABS(nbr) ((nbr) >= 0 ? (nbr) : (-1) * (nbr))
 
