@@ -71,6 +71,24 @@ void	ft_change_points(t_param *param, t_vektr *p)
 	p->zoom.z = (int)(rot_p.z * param->len);
 }
 
+
+void    ft_linear_perspective(t_param *param, t_point *p, t_dpoint *rot_p)
+{
+    p->z = (int)(rot_p->z * param->len);
+
+    if (p->z < 2000 - 100)
+    {
+        p->x = (int)(rot_p->x * param->len * 2000/(2000 - p->z)) + param->centr->zoom.x;
+        p->y = (int)(rot_p->y * param->len * 2000/(2000 - p->z)) + param->centr->zoom.y;
+    }
+    else
+    {
+        p->x = -1;
+        p->y = -1;
+    }
+    p->z += param->centr->zoom.z;
+}
+
 void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero)
 {
 	t_dpoint rot_p;
@@ -78,18 +96,14 @@ void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero)
 	ft_fill_dpoint(&rot_p, p->abs.y - zero->y, p->abs.x - zero->x, p->abs.z - zero->z);
 	rot_p = ft_rot_dpoint(&rot_p, &param->oxyz);
 
-    p->zoom.z = (int)(rot_p.z * param->len);
-
-	int x = (int)(rot_p.x * param->len);// - param->mouse.x;
-    x = x * 2000/(2000 - p->zoom.z);
-    p->zoom.x = x + param->centr->zoom.x;
-
-    int y = (int)(rot_p.y * param->len);// - param->mouse.y;
-    y = y * 2000/(2000 - p->zoom.z);
-    p->zoom.y = y + param->centr->zoom.y;
-    p->zoom.z += param->centr->zoom.z;
-//	p->zoom.y = (int)((rot_p.y + zero->y) * param->len) + param->cam_y;
-//    p->zoom.x = (int)((rot_p.x + zero->x) * param->len) + param->cam_x;
+	if (param->perspective == LINEAR_PERSPECTIVE)
+        ft_linear_perspective(param, &p->zoom, &rot_p);
+    else
+    {
+        p->zoom.x = (int)(rot_p.x * param->len) + param->centr->zoom.x;
+        p->zoom.y = (int)(rot_p.y * param->len) + param->centr->zoom.y;
+        p->zoom.z = (int)(rot_p.z * param->len) + param->centr->zoom.z;
+    }
 }
 
 

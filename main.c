@@ -57,7 +57,9 @@ void	ft_print_all_lines(t_arr *lines, t_pict *pic, t_param *param)
         line.index = -(i + 1);
 	    line.p1 = *(v++);
 	    line.p2 = *(v++);
-        draw_line_img(&line, pic, param->grad);
+	    if (!(line.p1->zoom.x == -1 && line.p1->zoom.y == -1)
+	    && !(line.p2->zoom.x == -1 && line.p2->zoom.y == -1))
+            draw_line_img(&line, pic, param->grad);
         i++;
 	}
 }
@@ -108,9 +110,9 @@ int		ft_move_camera(t_param *param)
 //    param->cam_x += (dx[0] * SPEED) / bigest;
 //    param->cam_y += (dy[0] * SPEED) / bigest;
 //	if (dx[1] <= SPEED)
-//		param->cam_x = param->target_x;
+		param->cam_x = param->target_x;
 //	if (dy[1] <= SPEED)
-//		param->cam_y = param->target_y;
+		param->cam_y = param->target_y;
 	return (TRUE);
 }
 
@@ -142,8 +144,8 @@ int     ft_activate_nearest_elem(t_all *all, t_param *param)
 
     if (param->near_id == DEFAULT_INDEX)
         return (FALSE);
-    param->cam_x = param->centr->zoom.x;
-    param->cam_y = param->centr->zoom.y;
+    //param->cam_x = param->centr->zoom.x;
+    //param->cam_y = param->centr->zoom.y;
     param->active_id = param->near_id;
     param->act[0] = NULL;
     param->act[1] = NULL;
@@ -169,16 +171,14 @@ void    ft_try_change_active_point(t_param *param)
 
     if (!param->act[0])
         return ;
-    param->centr = param->act[0];
     old.x = param->centr->zoom.x;
     old.y = param->centr->zoom.y;
-
+    param->centr = param->act[0];
     ft_rotate_point_around_point(param, param->centr, &param->centr->abs);
-
-    param->cam_x -= param->centr->zoom.x - old.x;
-    param->cam_y -= param->centr->zoom.y - old.y;
-    param->target_x -= param->centr->zoom.x - old.x;
-    param->target_y -= param->centr->zoom.y - old.y;
+    param->cam_x += param->centr->zoom.x - old.x;
+    param->cam_y += param->centr->zoom.y - old.y;
+    param->target_x += param->centr->zoom.x - old.x;
+    param->target_y += param->centr->zoom.y - old.y;
 }
 
 

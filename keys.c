@@ -91,7 +91,7 @@ int		ft_csale_picture(t_param *vis, int button, t_point *mouse)
 	}
 	else
 		return (FALSE);
-	ft_rotate_xyz(&(vis->oxyz), &(vis->ang));
+	//ft_rotate_xyz(&(vis->oxyz), &(vis->ang));
 	return (TRUE);
 }
 

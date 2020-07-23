@@ -77,8 +77,8 @@
 **	images
 */
 #define CONST_LEN 100
-#define CONST_WIDTH 2000
-#define CONST_HEINTH 1360
+#define CONST_WIDTH 2000/2
+#define CONST_HEINTH 1360/2
 #define CAM_X (CONST_WIDTH / 2)
 #define CAM_Y (CONST_HEINTH / 2)
 //#define RADIUS (DELTA * CONST_LEN * 0.7)
@@ -92,11 +92,9 @@
 typedef enum	e_persp
 {
 	NO_PERSPECTIVE,
-	WATER2,
-	MAGMA,
-	MAGMA2,
-	BLOB,
-	OBSTCL,
+	LINEAR_PERSPECTIVE,
+    SPHERE_P_PERSPECTIVE,
+    SPHERE_M_PERSPECTIVE,
 	LAST_PERSPECTIVE
 }				t_persp;
 
