@@ -65,6 +65,8 @@
 #define DOWN_COLOR 0xFF
 
 #define RED_COLOR 0xFF0000
+#define GREEN_COLOR 0xFF00
+#define BLUE_COLOR 0xFF
 #define ACTIVE_COLOR RED_COLOR
 
 #define MSG_ERROR1 "Malloc error\n"
@@ -139,6 +141,11 @@ void	ft_exit(t_all *all, char *error_message);
 int		ft_create_pair_from_points(t_arr *points, t_arr *lines);
 
 /*
+**	front.c
+*/
+void    ft_print_front(t_pict *pic, t_param *param);
+
+/*
 **	create_points_from_points.c
 */
 int		ft_get_color_from_string(char *str);
@@ -161,7 +168,7 @@ int		ft_int_interpolation(int y, int delta_y, int x1, int x2);
 /*
 **	print_shapes.c
 */
-void    ft_init_shape(t_shape *shape, t_form form);
+void    ft_init_shape(t_shape *shape, t_form form, t_bool is_particle);
 
 /*
 **	rotate.c

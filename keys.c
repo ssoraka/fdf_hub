@@ -121,9 +121,13 @@ int		ft_deal_key(int key, void *parametrs)
 	if (ft_rotate_and_csale(param, key) || ft_shift(param, key))
 		param->is_points_change = TRUE;
     else if (key == KEY_P)
-		param->perspective++;
-    else if (param->perspective == LAST_PERSPECTIVE)
-		param->perspective = NO_PERSPECTIVE;
+    {
+        param->perspective++;
+        if (param->perspective == LAST_PERSPECTIVE)
+            param->perspective = NO_PERSPECTIVE;
+    }
+    else if (key == KEY_K)
+        param->is_poligons_need_print = !param->is_poligons_need_print;
     else if (key == KEY_G)
 		param->grad = !param->grad;
     else if (key == KEY_ESC)

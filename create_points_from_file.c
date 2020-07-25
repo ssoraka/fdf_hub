@@ -58,7 +58,7 @@ void	ft_change_points_color(t_arr *points)
 
 int		ft_get_color_from_string(char *str)
 {
-	while (ft_isdigit(*str) || *str == '-')
+	while (*str && (*str == ',' || ft_isdigit(*str) || *str == '-'))
 	{
 		//надо сделать атоибейс
 		if (*str == 'x')
@@ -80,7 +80,7 @@ int		ft_string_to_points(char *str, t_arr *points, int y)
 	has_err = FALSE;
 	while (*str)
 	{
-		while (ft_isspace(*str))
+		while (*str && ft_isspace(*str))
 			str++;
 		z = ft_atoi(str);
 		ft_fill_dpoint(&(tmp.abs), y, x, z);
@@ -90,7 +90,7 @@ int		ft_string_to_points(char *str, t_arr *points, int y)
 			has_err = TRUE;
 			break ;
 		}
-		while (ft_isdigit(*str) || *str == '-')
+		while (*str && (ft_isdigit(*str) || *str == '-'))
 			str++;
 		x++;
 	}

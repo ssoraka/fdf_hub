@@ -83,7 +83,7 @@ void	draw_line_img(t_line *line, t_pict *pic, int grad)
 	line->delta.y = line->dir.y * (line->p2->zoom.y - p.y);
 	line->delta.x = line->dir.x * (line->p2->zoom.x - p.x);
 	line->delta.z = line->dir.z * (line->p2->zoom.z - p.z);
-    ft_init_shape(&shape, POINT);
+    ft_init_shape(&shape, POINT, FALSE);
     shape.color = line->color;
     shape.index = line->index;
 	//printf("%d_%d\n", p.z, p.z);

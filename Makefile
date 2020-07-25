@@ -13,7 +13,7 @@
 GCC = gcc -g -MMD
 NAME = fdf
 SRCS = color_interpolation.c       get_pixel.c  lines_vektrs.c  points.c        rotate.c \
-       create_lines_from_points.c  images.c     main.c          poligons.c \
+       create_lines_from_points.c  images.c     main.c          poligons.c      front.c \
        create_points_from_file.c   keys.c       print_shapes.c  create_poligons_from_points.c
 OBJS = $(SRCS:.c=.o)
 DEPENDS = ${OBJS:.o=.d} 

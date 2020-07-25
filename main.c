@@ -25,7 +25,7 @@ void    ft_print_active(t_pict *pic, t_param *param)
         return ;
     if (!param->act[1])
     {
-        ft_init_shape(&shape, CIRCLE);
+        ft_init_shape(&shape, CIRCLE, TRUE);
         shape.color = ACTIVE_COLOR;
         shape.index = param->active_id;
         shape.len = 10;
@@ -89,7 +89,7 @@ void	ft_print_all_points(t_arr *points, t_pict *pic, t_param *param)
     int count;
     t_shape shape;
 
-    ft_init_shape(&shape, POINT_INDEX);
+    ft_init_shape(&shape, POINT_INDEX, FALSE);
 
     count = points->elems_used;
     v = (t_vektr *)points->elems;
@@ -116,16 +116,11 @@ void	ft_rotate_all_points(t_arr *points, t_param *param)
 	count = points->elems_used;
 	v = ft_arr_get(points, 0);
 
-    t_shape shape;
-    ft_init_shape(&shape, POINT);
-    shape.len = 1;
-    shape.color = BACKGROUND_COLOR;
     i = 0;
     while (i < count)
 	{
 		// ft_change_points(param, v + i);
 		ft_rotate_point_around_point(param, v + i, &param->centr->abs);
-
 		i++;
 	}
 }
@@ -347,13 +342,14 @@ int		ft_loop_hook(void *param)
 	if (vis->param.is_points_change)
 	{
         ft_clear_image(&(vis->pic));
-//        ft_try_change_active_point(&vis->param);
         ft_rotate_all_points(all->points, &(vis->param));
-//        ft_print_all_lines(all->lines, &(vis->pic), &(vis->param));
-        ft_print_all_poligons(all->plgns, &(vis->pic), &(vis->param));
+        if (vis->param.is_poligons_need_print)
+            ft_print_all_poligons(all->plgns, &(vis->pic), &(vis->param));
+        else
+            ft_print_all_lines(all->lines, &(vis->pic), &(vis->param));
         ft_print_all_points(all->points, &(vis->pic), &(vis->param));
         ft_print_active(&(vis->pic), &(vis->param));
-
+        ft_print_front(&(vis->pic), &(vis->param));
 //		ft_memcpy((void *)vis->pic.addr, (void *)vis->pic.index, vis->pic.count_byte);
 	}
     mlx_put_image_to_window(vis->mlx, vis->win, vis->pic.img, 0, 0);

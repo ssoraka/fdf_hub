@@ -107,7 +107,7 @@ int		ft_realloc_arr(t_arr *arr, size_t new_count)
 	if (!(tmp = ft_memalloc(new_count * arr->elem_size)))
 		return (FALSE);
 	if (arr->elems)
-		ft_memcpy(tmp, arr->elems, arr->elems_count * arr->elem_size);
+		ft_memcpy8(tmp, arr->elems, arr->elems_count * arr->elem_size);
 	free(arr->elems);
 	arr->elems = tmp;
 	arr->elems_count = new_count;
@@ -117,18 +117,18 @@ int		ft_realloc_arr(t_arr *arr, size_t new_count)
 
 void	*ft_arr_add(t_arr *arr, void *elem)
 {
-	void *tmp;
+	char *tmp;
 
 	if (!arr || !elem)
 		return (NULL);
 	if ((size_t)arr->elems_used == arr->elems_count)
 		if (!ft_realloc_arr(arr, arr->elems_count * ARR_REALLOC_COEF + 1))
 			return (NULL);
-	tmp = arr->elems + arr->elems_used * arr->elem_size;
+	tmp = (char *)arr->elems + ((size_t)arr->elems_used) * arr->elem_size;
 	if (arr->value == ft_return_ptr)
-		ft_memcpy(tmp, &elem, arr->elem_size);
+		ft_memcpy8((void *)tmp, &elem, arr->elem_size);
 	else
-		ft_memcpy(tmp, elem, arr->elem_size);
+		ft_memcpy8((void *)tmp, elem, arr->elem_size);
 	(arr->elems_used)++;
 	return (tmp);
 }

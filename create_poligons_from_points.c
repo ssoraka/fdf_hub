@@ -20,7 +20,6 @@ int		ft_create_two_poligon(t_vektr *p1, t_vektr *p2, t_vektr *p3, t_arr *plgns)
         return (SUCCESS);
     if ((p1->abs.x + 1.0 == p2->abs.x && p1->abs.y == p2->abs.y
     && p1->abs.x == p3->abs.x && p1->abs.y + 1.0 == p3->abs.y)
-
     || (p3->abs.x == p1->abs.x + 1.0 && p3->abs.y == p1->abs.y
     && p3->abs.x == p2->abs.x && p3->abs.y == p2->abs.y + 1.0))
     {

@@ -48,12 +48,6 @@ typedef struct		s_line
 	struct s_vektr *p2;
 }					t_line;
 
-typedef struct		s_trgn
-{
-    struct s_vektr	*p[4];
-    struct s_dpoint	n;
-}					t_trgn;
-
 typedef struct		s_plgn
 {
 	int color;
@@ -100,6 +94,7 @@ typedef struct		s_param
 
 	int				is_points_change;
 	int				grad;
+	int             is_poligons_need_print;
 	double			len;
 
     struct s_point	mouse;
@@ -146,6 +141,7 @@ typedef struct		s_shape
     int             index;
     int             len;
     int             only_index;
+    int             is_particles;
     int             form;
     int     	    (*print)(t_pict *, t_point *, struct s_shape *);
 }					t_shape;

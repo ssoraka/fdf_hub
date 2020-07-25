@@ -18,13 +18,16 @@ int		ft_put_pixel_to_img(t_pict *pic, t_point *p, t_shape *shape)
 {
     if (p->x < 0 || p->y < 0 || p->x >= CONST_WIDTH || p->y >= CONST_HEINTH)
         return (FALSE);
-    if (pic->z_buffer[p->y * CONST_WIDTH + p->x] > p->z)
-        return (FALSE);
-    pic->index[p->y * CONST_WIDTH + p->x] = shape->index;
-    if (shape->only_index)
-        return (TRUE);
+    if (!shape->is_particles)
+    {
+        if (pic->z_buffer[p->y * CONST_WIDTH + p->x] > p->z)
+            return (FALSE);
+        pic->index[p->y * CONST_WIDTH + p->x] = shape->index;
+        if (shape->only_index)
+            return (TRUE);
+        pic->z_buffer[p->y * CONST_WIDTH + p->x] = p->z;
+    }
     pic->addr[p->y * CONST_WIDTH + p->x] = shape->color;
-    pic->z_buffer[p->y * CONST_WIDTH + p->x] = p->z;
     return (TRUE);
 }
 
@@ -111,9 +114,10 @@ int 	circle(t_pict *pic, t_point *center, t_shape *shape)
     return (TRUE);
 }
 
-void    ft_init_shape(t_shape *shape, t_form form)
+void    ft_init_shape(t_shape *shape, t_form form, t_bool is_particle)
 {
     shape->only_index = FALSE;
+    shape->is_particles = is_particle;
     shape->form = form;
     if (form == POINT_INDEX)
         shape->only_index = TRUE;
