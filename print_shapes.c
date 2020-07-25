@@ -20,24 +20,26 @@ int		ft_put_pixel_to_img(t_pict *pic, t_point *p, t_shape *shape)
         return (FALSE);
     if (pic->z_buffer[p->y * CONST_WIDTH + p->x] > p->z)
         return (FALSE);
+    pic->index[p->y * CONST_WIDTH + p->x] = shape->index;
+    if (shape->only_index)
+        return (TRUE);
     pic->addr[p->y * CONST_WIDTH + p->x] = shape->color;
     pic->z_buffer[p->y * CONST_WIDTH + p->x] = p->z;
-    pic->index[p->y * CONST_WIDTH + p->x] = shape->index;
     return (TRUE);
 }
 
 
-int		ft_put_pixel_to_img2(t_pict *pic, t_point *p, int color, int index)
-{
-    if (p->x < 0 || p->y < 0 || p->x >= CONST_WIDTH || p->y >= CONST_HEINTH)
-        return (FALSE);
-    if (pic->z_buffer[p->y * CONST_WIDTH + p->x] > p->z)
-        return (FALSE);
-    pic->addr[p->y * CONST_WIDTH + p->x] = color;
-    pic->z_buffer[p->y * CONST_WIDTH + p->x] = p->z;
-    pic->index[p->y * CONST_WIDTH + p->x] = index;
-    return (TRUE);
-}
+//int		ft_put_pixel_to_img2(t_pict *pic, t_point *p, int color, int index)
+//{
+//    if (p->x < 0 || p->y < 0 || p->x >= CONST_WIDTH || p->y >= CONST_HEINTH)
+//        return (FALSE);
+//    if (pic->z_buffer[p->y * CONST_WIDTH + p->x] > p->z)
+//        return (FALSE);
+//    pic->addr[p->y * CONST_WIDTH + p->x] = color;
+//    pic->z_buffer[p->y * CONST_WIDTH + p->x] = p->z;
+//    pic->index[p->y * CONST_WIDTH + p->x] = index;
+//    return (TRUE);
+//}
 
 int 	ft_print_rect(t_pict *pic, t_point *center, t_shape *shape)
 {
@@ -111,7 +113,10 @@ int 	circle(t_pict *pic, t_point *center, t_shape *shape)
 
 void    ft_init_shape(t_shape *shape, t_form form)
 {
+    shape->only_index = FALSE;
     shape->form = form;
+    if (form == POINT_INDEX)
+        shape->only_index = TRUE;
     if (form == CIRCLE)
         shape->print = circle;
     else if (form == RECTANGLE)

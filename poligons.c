@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_mod1.h"
+#include "./includes/ft_fdf.h"
 
 t_plgn	*ft_create_poligon(t_vektr *p1, t_vektr *p2, t_vektr *p3, int color)
 {
@@ -96,6 +96,7 @@ void	ft_draw_traing(t_pict *pic, t_vektr **p, int grad, int color)
 	line.p1 = &tmp1;
 	line.p2 = &tmp2;
 	line.color = color;
+    line.index = DEFAULT_INDEX;
 	delta = ft_znak(p[0]->zoom.y - p[1]->zoom.y);
 	y = p[1]->zoom.y;
 	while (y != p[0]->zoom.y)
@@ -104,12 +105,12 @@ void	ft_draw_traing(t_pict *pic, t_vektr **p, int grad, int color)
 		ft_vektr_interpolation_by_y(&tmp1, p[0], p[1], grad);
 		tmp2.zoom.y = y;
 		ft_vektr_interpolation_by_y(&tmp2, p[0], p[2], grad);
-		draw_line_img2(&line, pic, grad);
+		draw_line_img(&line, pic, grad);
 		y += delta;
 	}
 	 line.p1 = p[1];
 	 line.p2 = p[2];
-	 draw_line_img2(&line, pic, grad);
+	 draw_line_img(&line, pic, grad);
 }
 
 
@@ -143,7 +144,7 @@ void	ft_prepare_plgn_for_printing(t_plgn *plgn, t_param *param)
 	plgn->rot_n = ft_rot_dpoint(&plgn->n, &param->oxyz);
 	plgn->cos = ft_vekt_cos(plgn->rot_n, param->light);
 	if (plgn->cos < 0.0)
-		plgn->cos = 0.0;
+		plgn->cos *= -1.0;
 }
 
 

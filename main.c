@@ -64,7 +64,46 @@ void	ft_print_all_lines(t_arr *lines, t_pict *pic, t_param *param)
 	}
 }
 
-void	ft_rotate_all_points(t_arr *points, t_pict *pic, t_param *param)
+void	ft_print_all_poligons(t_arr *plgns, t_pict *pic, t_param *param)
+{
+    t_plgn *plgn;
+    int i;
+    int count;
+
+    count = plgns->elems_used;
+    plgn = (t_plgn *)plgns->elems;
+    i = 0;
+    while (i < count)
+    {
+        ft_prepare_plgn_for_printing(plgn, param);
+        ft_print_plgn(plgn, pic, param->grad);
+        plgn++;
+        i++;
+    }
+}
+
+void	ft_print_all_points(t_arr *points, t_pict *pic, t_param *param)
+{
+    t_vektr *v;
+    int i;
+    int count;
+    t_shape shape;
+
+    ft_init_shape(&shape, POINT_INDEX);
+
+    count = points->elems_used;
+    v = (t_vektr *)points->elems;
+    i = 0;
+    while (i < count)
+    {
+        shape.index = i + 1;
+        shape.print(pic, &(v->zoom), &shape);
+        v++;
+        i++;
+    }
+}
+
+void	ft_rotate_all_points(t_arr *points, t_param *param)
 {
 	t_vektr *v;
 	int i;
@@ -78,7 +117,7 @@ void	ft_rotate_all_points(t_arr *points, t_pict *pic, t_param *param)
 	v = ft_arr_get(points, 0);
 
     t_shape shape;
-    ft_init_shape(&shape, CIRCLE);
+    ft_init_shape(&shape, POINT);
     shape.len = 1;
     shape.color = BACKGROUND_COLOR;
     i = 0;
@@ -86,8 +125,7 @@ void	ft_rotate_all_points(t_arr *points, t_pict *pic, t_param *param)
 	{
 		// ft_change_points(param, v + i);
 		ft_rotate_point_around_point(param, v + i, &param->centr->abs);
-        shape.index = i + 1;
-        shape.print(pic, &((v + i)->zoom), &shape);
+
 		i++;
 	}
 }
@@ -310,8 +348,10 @@ int		ft_loop_hook(void *param)
 	{
         ft_clear_image(&(vis->pic));
 //        ft_try_change_active_point(&vis->param);
-        ft_rotate_all_points(all->points, &(vis->pic), &(vis->param));
-        ft_print_all_lines(all->lines, &(vis->pic), &(vis->param));
+        ft_rotate_all_points(all->points, &(vis->param));
+//        ft_print_all_lines(all->lines, &(vis->pic), &(vis->param));
+        ft_print_all_poligons(all->plgns, &(vis->pic), &(vis->param));
+        ft_print_all_points(all->points, &(vis->pic), &(vis->param));
         ft_print_active(&(vis->pic), &(vis->param));
 
 //		ft_memcpy((void *)vis->pic.addr, (void *)vis->pic.index, vis->pic.count_byte);
@@ -346,6 +386,8 @@ int 	ft_init_all(t_all *all)
 		return (FAIL);
 	if (!(all->lines = ft_create_arr_of_ptr(10, NULL)))
 		return (FAIL);
+    if (!(all->plgns = ft_create_arr(sizeof(t_plgn), 10, NULL)))
+        return (FAIL);
 	if (!(all->vis = ft_create_mlx(CONST_WIDTH, CONST_HEINTH, "fdf")))
 		return (FAIL);
 	return (SUCCESS);
@@ -357,6 +399,8 @@ void	ft_exit(t_all *all, char *error_message)
 		ft_del_arr(&all->points);
 	if (all->lines)
 		ft_del_arr(&all->lines);
+    if (all->plgns)
+        ft_del_arr(&all->plgns);
 	if (all->vis)
 		ft_destroy_mlx(&all->vis);
 	if (error_message)
@@ -378,7 +422,12 @@ int		main(int argc, char **argv)
 		ft_exit(&all, MSG_ERROR1);
 	if (ft_create_pair_from_points(all.points, all.lines) == FAIL)
 		ft_exit(&all, MSG_ERROR1);
-	ft_for_each_elem(all.points, &ft_print_points, NULL);
+    if (ft_poligons_from_points(all.points, all.plgns) == FAIL)
+        ft_exit(&all, MSG_ERROR1);
+//	ft_for_each_elem(all.points, &ft_print_points, NULL);
+	printf("lines count = %d\n", all.lines->elems_used);
+	printf("polig count = %d\n", all.plgns->elems_used);
+//    return (0);
     all.vis->param.centr = ft_arr_get(all.points, 0);
 
 //	ft_for_each_elem(all.lines, &ft_print_lines, NULL);

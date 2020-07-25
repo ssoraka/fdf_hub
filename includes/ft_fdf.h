@@ -77,8 +77,8 @@
 **	images
 */
 #define CONST_LEN 100
-#define CONST_WIDTH 2000/2
-#define CONST_HEINTH 1360/2
+#define CONST_WIDTH 2000
+#define CONST_HEINTH 1360
 #define CAM_X (CONST_WIDTH / 2)
 #define CAM_Y (CONST_HEINTH / 2)
 //#define RADIUS (DELTA * CONST_LEN * 0.7)
@@ -121,6 +121,7 @@ typedef enum	e_column
 typedef enum	e_form
 {
 	POINT,
+	POINT_INDEX,
 	RECTANGLE,
 	CIRCLE
 }				t_form;
@@ -144,7 +145,10 @@ int		ft_get_color_from_string(char *str);
 int		ft_string_to_points(char *str, t_arr *points, int y);
 int		ft_points_from_file(char *name, t_arr *points);
 
-
+/*
+**	create_lines_from_points.c
+*/
+int		ft_poligons_from_points(t_arr *points, t_arr *plgns);
 
 /*
 **	color_interpolation.c
@@ -189,9 +193,9 @@ t_vis	*ft_destroy_mlx(t_vis **vis);
 **	lines_vektrs.c
 */
 void	draw_line_img(t_line *line, t_pict *pic, int grad);
-// /*
-// **	poligons.c
-// */
+/*
+**	poligons.c
+*/
 // t_plgn	*ft_create_poligon(t_vektr *p1, t_vektr *p2, t_vektr *p3, int color);
 // void	ft_del_poligines(t_plgn **begin);
 // void	ft_swap_ptr(void **ptr1, void **ptr2);
@@ -199,9 +203,9 @@ void	draw_line_img(t_line *line, t_pict *pic, int grad);
 // void	ft_vektr_interpolation_by_y(t_vektr *p, t_vektr *p1, t_vektr *p2, int grad);
 // int		ft_need_print_traing(t_vektr **p, t_pict *pic);
 // void	ft_draw_traing(t_pict *pic, t_vektr **p, int grad, int color);
-// void	ft_print_plgn(t_plgn *plgn, t_pict *pic, int grad);
+ void	ft_print_plgn(t_plgn *plgn, t_pict *pic, int grad);
 // void	ft_print_poligons(t_plgn *plgn, t_vektr *points, t_pict *pic, t_param *param);
-// void	ft_prepare_plgn_for_printing(t_plgn *plgn, t_param *param);
+ void	ft_prepare_plgn_for_printing(t_plgn *plgn, t_param *param);
 /*
 **	keys.c
 */

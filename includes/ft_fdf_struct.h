@@ -48,6 +48,11 @@ typedef struct		s_line
 	struct s_vektr *p2;
 }					t_line;
 
+typedef struct		s_trgn
+{
+    struct s_vektr	*p[4];
+    struct s_dpoint	n;
+}					t_trgn;
 
 typedef struct		s_plgn
 {
@@ -131,6 +136,7 @@ typedef struct		s_all
 {
 	struct s_arr	*points;
 	struct s_arr	*lines;
+	struct s_arr	*plgns;
 	struct s_vis	*vis;
 }					t_all;
 
@@ -139,6 +145,7 @@ typedef struct		s_shape
     int             color;
     int             index;
     int             len;
+    int             only_index;
     int             form;
     int     	    (*print)(t_pict *, t_point *, struct s_shape *);
 }					t_shape;

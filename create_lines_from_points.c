@@ -48,17 +48,16 @@ int		ft_create_pair_from_points(t_arr *points, t_arr *lines)
 	down = ft_arr_get(points, 0);
 	while ((curr = (t_vektr *)ft_arr_get_next(points)))
 	{
-		if (curr != last)
-		{
-			if (ft_create_right_pair(curr, curr + 1, lines) == FAIL)
-				return (FAIL);
-			while (down->abs.y <= curr->abs.y && down != last)
-				down++;
-			while (down->abs.y == curr->abs.y + 1 && down->abs.x < curr->abs.x && down != last)
-				down++;
-			if (ft_create_down_pair(curr, down, lines) == FAIL)
-				return (FAIL);
-		}
+		if (curr == last)
+            continue ;
+        if (ft_create_right_pair(curr, curr + 1, lines) == FAIL)
+            return (FAIL);
+        while (down->abs.y <= curr->abs.y && down != last)
+            down++;
+        while (down->abs.y == curr->abs.y + 1 && down->abs.x < curr->abs.x && down != last)
+            down++;
+        if (ft_create_down_pair(curr, down, lines) == FAIL)
+            return (FAIL);
 	}
 	return(SUCCESS);
 }

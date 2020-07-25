@@ -47,10 +47,11 @@ void	ft_change_points_color(t_arr *points)
 		tmp = (int)p->abs.z * 2;
 		tmp2 = min_z * 2 + (max_z - min_z);
 		if (p->color != DEFAULT_COLOR)
-			;
-		if (tmp >= tmp2)
+			continue ;
+		p->color = ZERO_COLOR;
+		if (tmp >= tmp2 && (int)(max_z - min_z))
 			p->color = ft_grad_color(tmp - tmp2, (int)(max_z - min_z), UP_COLOR, ZERO_COLOR);
-		else
+		else if ((int)(max_z - min_z))
 			p->color = ft_grad_color(tmp2 - tmp, (int)(max_z - min_z), DOWN_COLOR, ZERO_COLOR);
 	}
 }
