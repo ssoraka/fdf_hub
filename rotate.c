@@ -89,6 +89,31 @@ void    ft_linear_perspective(t_param *param, t_point *p, t_dpoint *rot_p)
     p->z += param->centr->zoom.z;
 }
 
+void    ft_sphere_perspective(t_param *param, t_point *p, t_dpoint *rot_p)
+{
+    long d;
+    t_point tmp;
+
+    tmp.x = (int)(rot_p->x * param->len);
+    tmp.y = (int)(rot_p->y * param->len);
+    tmp.z = (int)(rot_p->z * param->len);
+
+    d = sqrt(tmp.x * tmp.x + tmp.y * tmp.y + param->radius * param->radius);
+
+    if (param->perspective == SPHERE_M_PERSPECTIVE)
+    {
+        p->x = (param->radius * tmp.x) / d + param->centr->zoom.x;
+        p->y = (param->radius * tmp.y) / d + param->centr->zoom.x;
+    }
+    else
+    {
+        p->x = (d * tmp.x) / param->radius + param->centr->zoom.x;
+        p->y = (d * tmp.y) / param->radius + param->centr->zoom.x;
+    }
+    p->z = (int)(rot_p->z * param->len) + param->centr->zoom.z;
+
+}
+
 void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero)
 {
 	t_dpoint rot_p;
@@ -98,6 +123,8 @@ void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero)
 
 	if (param->perspective == LINEAR_PERSPECTIVE)
         ft_linear_perspective(param, &p->zoom, &rot_p);
+//    else if (param->perspective == SPHERE_M_PERSPECTIVE || param->perspective == SPHERE_P_PERSPECTIVE)
+//        ft_sphere_perspective(param, &p->zoom, &rot_p);
     else
     {
         p->zoom.x = (int)(rot_p.x * param->len) + param->centr->zoom.x;

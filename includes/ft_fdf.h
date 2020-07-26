@@ -80,7 +80,7 @@
 **	images
 */
 #define CONST_LEN 100
-#define CONST_RADIUS 2000
+#define CONST_RADIUS 1000
 #define CONST_WIDTH 2000
 #define CONST_HEINTH 1360
 #define CAM_X (CONST_WIDTH / 2)

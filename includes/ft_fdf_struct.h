@@ -93,7 +93,7 @@ typedef struct		s_param
 	int				is_points_change;
 	int				grad;
 	int             is_poligons_need_print;
-	int             radius;
+    double             radius;
 	double			len;
 
 
