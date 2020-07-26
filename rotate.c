@@ -76,10 +76,10 @@ void    ft_linear_perspective(t_param *param, t_point *p, t_dpoint *rot_p)
 {
     p->z = (int)(rot_p->z * param->len);
 
-    if (p->z < 2000 - 100)
+    if (p->z < param->radius - 100)
     {
-        p->x = (int)(rot_p->x * param->len * 2000/(2000 - p->z)) + param->centr->zoom.x;
-        p->y = (int)(rot_p->y * param->len * 2000/(2000 - p->z)) + param->centr->zoom.y;
+        p->x = (int)(rot_p->x * param->len * param->radius/(param->radius - p->z)) + param->centr->zoom.x;
+        p->y = (int)(rot_p->y * param->len * param->radius/(param->radius - p->z)) + param->centr->zoom.y;
     }
     else
     {

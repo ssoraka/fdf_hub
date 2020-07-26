@@ -76,10 +76,10 @@ int		ft_need_print_traing(t_vektr **p, t_pict *pic)
 		return (FALSE);
 	if (p[0]->zoom.x >= CONST_WIDTH && p[1]->zoom.x >= CONST_WIDTH && p[2]->zoom.x >= CONST_WIDTH)
 		return (FALSE);
-	/*if (pic->z_buffer[p[0]->zoom.y * CONST_WIDTH + p[0]->zoom.x] > p[0]->zoom.z
-	&& pic->z_buffer[p[1]->zoom.y * CONST_WIDTH + p[1]->zoom.x] > p[1]->zoom.z
-	&& pic->z_buffer[p[2]->zoom.y * CONST_WIDTH + p[2]->zoom.x] > p[2]->zoom.z)
-		return (FALSE);*/
+	if ((p[0]->zoom.y == -1 && p[0]->zoom.x == -1)
+	|| (p[1]->zoom.y == -1 && p[1]->zoom.x == -1)
+	|| (p[2]->zoom.y == -1 && p[2]->zoom.x == -1))
+		return (FALSE);
 	return (TRUE);
 }
 
@@ -91,8 +91,6 @@ void	ft_draw_traing(t_pict *pic, t_vektr **p, int grad, int color)
 	int delta;
 	int y;
 
-	if (!ft_need_print_traing(p, pic))
-		return ;
 	line.p1 = &tmp1;
 	line.p2 = &tmp2;
 	line.color = color;
@@ -155,17 +153,19 @@ void	ft_print_plgn(t_plgn *plgn, t_pict *pic, int grad)
 	int colors[4];
 
 	ft_save_points_colors(plgn, colors);
-	ft_change_points_colors(plgn);
-	p[0] = plgn->p[0];
-	p[1] = plgn->p[1];
-	p[2] = plgn->p[2];
-	ft_sort_points_by_y(p);
-	tmp.zoom.y = p[1]->zoom.y;
-	ft_vektr_interpolation_by_y(&tmp, p[0], p[2], grad);
-	p[3] = p[2];
-	p[2] = &tmp;
-	ft_draw_traing(pic, p, grad, plgn->color);
-	p[0] = p[3];
-	ft_draw_traing(pic, p, grad, plgn->color);
+    if (!ft_need_print_traing(plgn->p, pic))
+        return ;
+    ft_change_points_colors(plgn);
+    p[0] = plgn->p[0];
+    p[1] = plgn->p[1];
+    p[2] = plgn->p[2];
+    ft_sort_points_by_y(p);
+    tmp.zoom.y = p[1]->zoom.y;
+    ft_vektr_interpolation_by_y(&tmp, p[0], p[2], grad);
+    p[3] = p[2];
+    p[2] = &tmp;
+    ft_draw_traing(pic, p, grad, plgn->color);
+    p[0] = p[3];
+    ft_draw_traing(pic, p, grad, plgn->color);
 	ft_recovery_points_colors(plgn, colors);
 }

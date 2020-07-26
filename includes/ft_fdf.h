@@ -68,6 +68,7 @@
 #define GREEN_COLOR 0xFF00
 #define BLUE_COLOR 0xFF
 #define ACTIVE_COLOR RED_COLOR
+#define CREATE_COLOR BLUE_COLOR
 
 #define MSG_ERROR1 "Malloc error\n\0\0Not valid map\n\0File not found\n"
 
@@ -79,6 +80,7 @@
 **	images
 */
 #define CONST_LEN 100
+#define CONST_RADIUS 2000
 #define CONST_WIDTH 2000
 #define CONST_HEINTH 1360
 #define CAM_X (CONST_WIDTH / 2)
@@ -122,6 +124,17 @@ typedef enum	e_form
 **	main.c
 */
 void	ft_exit(t_all *all, char *error_message);
+
+/*
+**	print_active_points.c
+*/
+void    ft_print_active(t_pict *pic, t_param *param);
+
+/*
+**	create_new_elem.c
+*/
+void    ft_add_point_for_creating(t_param *param, t_vektr *v);
+void    ft_create_new_elem(t_all *all, t_param *param);
 
 /*
 **	create_lines_from_points.c

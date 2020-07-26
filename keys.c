@@ -15,6 +15,10 @@
 #define CAM_SHIFT 20
 #define CAM_SCALE 1.1
 #define CAM_ROTATE 90
+#define PERSP_SPEED 4
+#define MIN_RADIUS 500
+#define MAX_RADIUS 5000
+
 
 #define MIN_SCALE 0.01
 #define MAX_SCALE 1000.0
@@ -47,9 +51,9 @@ int     ft_proection(t_param *param, int key)
 
 int		ft_rotate_and_csale(t_param *vis, int key)
 {
-	if ((key == KEY_PLUS || key == 69) && vis->len < MAX_SCALE)
+	if (key == KEY_PLUS && vis->len < MAX_SCALE)
 		vis->len *= CAM_SCALE;
-	else if ((key == KEY_MINUS || key == 78) && vis->len > MIN_SCALE)
+	else if (key == KEY_MINUS && vis->len > MIN_SCALE)
 		vis->len /= CAM_SCALE;
 	else if (key == KEY_Q)
 		vis->ang.z += M_PI / CAM_ROTATE;
@@ -63,6 +67,12 @@ int		ft_rotate_and_csale(t_param *vis, int key)
 		vis->ang.x += M_PI / CAM_ROTATE;
 	else if (key == KEY_D)
 		vis->ang.x -= M_PI / CAM_ROTATE;
+    else if (key == KEY_O && vis->radius > MIN_RADIUS)
+        vis->radius -= PERSP_SPEED;
+    else if (key == KEY_I && vis->radius < MIN_RADIUS)
+        vis->radius += PERSP_SPEED;
+    else if (key == KEY_C)
+        vis->is_creating++;
 	else if (!ft_proection(vis, key))
 		return (FALSE);
 	ft_rotate_xyz(&(vis->oxyz), &(vis->ang));
@@ -84,7 +94,7 @@ int		ft_csale_picture(t_param *vis, int button, t_point *mouse)
 		ft_fill_point(&vis->first_pos, mouse->y, mouse->x, 0);
 		vis->left_button_press = TRUE;
 	}
-	else if (button == RIGHT_BUTTON)
+	else if (button == MIDDLE_BUTTON)
 	{
 		ft_fill_point(&vis->pos, mouse->y, mouse->x, 0);
 		vis->right_button_press = TRUE;

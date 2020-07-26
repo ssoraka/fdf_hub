@@ -37,6 +37,7 @@
 #define KEY_R 1739
 #define KEY_G 1744
 #define KEY_I 1755
+#define KEY_C 8
 
 #define LEFT_BUTTON 1
 #define RIGHT_BUTTON 3
@@ -50,8 +51,8 @@
 
 #elif defined(__APPLE__) && defined(__MACH__)
 
-#define KEY_PLUS 18
-#define KEY_MINUS 19
+#define KEY_PLUS 69
+#define KEY_MINUS 78
 #define KEY_Q 12
 #define KEY_A 0
 #define KEY_W 13
@@ -72,6 +73,7 @@
 #define KEY_R 15
 #define KEY_G 5
 #define KEY_I 34
+#define KEY_C 8
 
 #define LEFT_BUTTON 1
 #define RIGHT_BUTTON 2
@@ -79,9 +81,9 @@
 #define MIDDLE_FORW_BUTTON 4
 #define MIDDLE_BACK_BUTTON 5
 
-#define KEY_1 49
-#define KEY_2 50
-#define KEY_3 51
+#define KEY_1 18
+#define KEY_2 19
+#define KEY_3 20
 
 #else
     #error Unknown environment!

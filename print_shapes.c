@@ -12,8 +12,6 @@
 
 #include "./includes/ft_fdf.h"
 
-
-
 int		ft_put_pixel_to_img(t_pict *pic, t_point *p, t_shape *shape)
 {
     if (p->x < 0 || p->y < 0 || p->x >= CONST_WIDTH || p->y >= CONST_HEINTH)
@@ -30,19 +28,6 @@ int		ft_put_pixel_to_img(t_pict *pic, t_point *p, t_shape *shape)
     pic->addr[p->y * CONST_WIDTH + p->x] = shape->color;
     return (TRUE);
 }
-
-
-//int		ft_put_pixel_to_img2(t_pict *pic, t_point *p, int color, int index)
-//{
-//    if (p->x < 0 || p->y < 0 || p->x >= CONST_WIDTH || p->y >= CONST_HEINTH)
-//        return (FALSE);
-//    if (pic->z_buffer[p->y * CONST_WIDTH + p->x] > p->z)
-//        return (FALSE);
-//    pic->addr[p->y * CONST_WIDTH + p->x] = color;
-//    pic->z_buffer[p->y * CONST_WIDTH + p->x] = p->z;
-//    pic->index[p->y * CONST_WIDTH + p->x] = index;
-//    return (TRUE);
-//}
 
 int 	ft_print_rect(t_pict *pic, t_point *center, t_shape *shape)
 {
@@ -68,7 +53,9 @@ int 	ft_print_rect(t_pict *pic, t_point *center, t_shape *shape)
 }
 
 
-/* Вспомогательная функция, печатает точки, определяющие окружность */
+/*
+** Вспомогательная функция, печатает точки, определяющие окружность
+*/
 void 	plot_circle(t_pict *pic, t_point *p, t_point *center, t_shape *shape)
 {
 	t_point point;
@@ -83,7 +70,9 @@ void 	plot_circle(t_pict *pic, t_point *p, t_point *center, t_shape *shape)
 	ft_put_pixel_to_img(pic, &point, shape);
 }
 
-/* Вычерчивание окружности с использованием алгоритма Мичнера */
+/*
+** Вычерчивание окружности с использованием алгоритма Мичнера
+*/
 int 	circle(t_pict *pic, t_point *center, t_shape *shape)
 {
 	int x;

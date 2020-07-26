@@ -73,14 +73,12 @@ typedef struct		s_pict
 	int				endian;
 }					t_pict;
 
-
 typedef struct		s_oxyz
 {
 	struct s_dpoint	oy;
 	struct s_dpoint	ox;
 	struct s_dpoint	oz;
 }					t_oxyz;
-
 
 typedef struct		s_param
 {
@@ -95,7 +93,9 @@ typedef struct		s_param
 	int				is_points_change;
 	int				grad;
 	int             is_poligons_need_print;
+	int             radius;
 	double			len;
+
 
     struct s_point	mouse;
     int             near_id;
@@ -109,8 +109,11 @@ typedef struct		s_param
 	struct s_point	first_pos;
 
     int             active_id;
-	struct s_vektr	*act[2];
 	struct s_vektr	*centr;
+
+	int             is_creating;
+	int             id;
+    struct s_vektr	*p_new[3];
 
 	struct s_dpoint	light;
 	struct s_dpoint	ang;

@@ -12,35 +12,6 @@
 
 #include "./includes/ft_fdf.h"
 
-
-#define ABS(nbr) ((nbr) >= 0 ? (nbr) : (-1) * (nbr))
-
-
-void    ft_print_active(t_pict *pic, t_param *param)
-{
-    t_shape shape;
-    t_line line;
-
-    if (!param->act[0])
-        return ;
-    if (!param->act[1])
-    {
-        ft_init_shape(&shape, CIRCLE, TRUE);
-        shape.color = ACTIVE_COLOR;
-        shape.index = param->active_id;
-        shape.len = 10;
-        shape.print(pic, &param->act[0]->zoom, &shape);
-    }
-    else
-    {
-        line.color = ACTIVE_COLOR;
-        line.index = param->active_id;
-        line.p1 = param->act[0];
-        line.p2 = param->act[1];
-        draw_line_img(&line, pic, FALSE);
-    }
-}
-
 void	ft_print_all_lines(t_arr *lines, t_pict *pic, t_param *param)
 {
 	t_line line;
@@ -54,7 +25,7 @@ void	ft_print_all_lines(t_arr *lines, t_pict *pic, t_param *param)
     i = 0;
     while (i < count)
 	{
-        line.index = -(i + 1);
+        line.index = DEFAULT_INDEX;
 	    line.p1 = *(v++);
 	    line.p2 = *(v++);
 	    if (!(line.p1->zoom.x == -1 && line.p1->zoom.y == -1)
@@ -171,42 +142,58 @@ int		ft_mouse_get_new_pos(int x, int y, t_param *param)
     return (TRUE);
 }
 
-int     ft_activate_nearest_elem(t_all *all, t_param *param)
+//int     ft_activate_nearest_elem(t_all *all, t_param *param)
+//{
+//    int id;
+//
+//    if (param->near_id == DEFAULT_INDEX)
+//        return (FALSE);
+//    //param->cam_x = param->centr->zoom.x;
+//    //param->cam_y = param->centr->zoom.y;
+//    param->active_id = param->near_id;
+//    param->act[0] = NULL;
+//    param->act[1] = NULL;
+//    if (param->near_id > 0)
+//    {
+//        id = param->near_id - 1;
+//        param->act[0] = ft_arr_get(all->points, id);
+//    }
+//    else
+//    {
+//        id = -param->near_id - 1;
+//        param->act[0] = ft_arr_get(all->lines, id * 2);
+//        param->act[1] = ft_arr_get(all->lines, id * 2 + 1);
+//    }
+//    param->near_id = DEFAULT_INDEX;
+//    return (TRUE);
+//}
+
+t_vektr *ft_get_nearest_point(t_all *all, t_param *param)
 {
     int id;
+    t_vektr *v;
 
     if (param->near_id == DEFAULT_INDEX)
-        return (FALSE);
-    //param->cam_x = param->centr->zoom.x;
-    //param->cam_y = param->centr->zoom.y;
-    param->active_id = param->near_id;
-    param->act[0] = NULL;
-    param->act[1] = NULL;
+        return (NULL);
     if (param->near_id > 0)
     {
+        param->active_id = param->near_id;
         id = param->near_id - 1;
-        param->act[0] = ft_arr_get(all->points, id);
-    }
-    else
-    {
-        id = -param->near_id - 1;
-        param->act[0] = ft_arr_get(all->lines, id * 2);
-        param->act[1] = ft_arr_get(all->lines, id * 2 + 1);
+        v = (t_vektr *)ft_arr_get(all->points, id);
     }
     param->near_id = DEFAULT_INDEX;
-    return (TRUE);
+    return (v);
 }
 
-
-void    ft_try_change_active_point(t_param *param)
+void    ft_try_change_active_point(t_param *param, t_vektr *active)
 {
     t_point old;
 
-    if (!param->act[0])
+    if (!active)
         return ;
     old.x = param->centr->zoom.x;
     old.y = param->centr->zoom.y;
-    param->centr = param->act[0];
+    param->centr = active;
     ft_rotate_point_around_point(param, param->centr, &param->centr->abs);
     param->cam_x += param->centr->zoom.x - old.x;
     param->cam_y += param->centr->zoom.y - old.y;
@@ -219,6 +206,7 @@ int		ft_mouse_press(int button, int x, int y, void *parameters)
 {
 	t_all *all;
 	t_param *param;
+	t_vektr *active;
 
 	all = (t_all *)parameters;
 	param = &all->vis->param;
@@ -227,10 +215,13 @@ int		ft_mouse_press(int button, int x, int y, void *parameters)
 //	printf("___BUTTON %d\n", button);
 	if (ft_csale_picture(param, button, &param->mouse))
 		param->is_points_change = TRUE;
-	if (button == MIDDLE_BUTTON)
-	    if (ft_activate_nearest_elem(all, param))
+	if (button == RIGHT_BUTTON)
+	    if ((active = ft_get_nearest_point(all, param)))
         {
-            ft_try_change_active_point(param);
+	        if (param->is_creating)
+                ft_add_point_for_creating(param, active);
+	        else
+                ft_try_change_active_point(param, active);
             param->is_points_change = TRUE;
         }
 	return (0);
@@ -295,7 +286,7 @@ int		ft_mouse_release(int button, int x, int y, void *parameters)
 	param = &all->vis->param;
 	if (param->exit || !ft_mouse_on_window(x, y))
 		return (0);
-	if (button == RIGHT_BUTTON)
+	if (button == MIDDLE_BUTTON)
 		param->right_button_press = FALSE;
 	else if (button == LEFT_BUTTON)
 		param->left_button_press = FALSE;
@@ -339,6 +330,7 @@ int		ft_loop_hook(void *param)
 		ft_exit(all, NULL);
 	if ((ft_move_camera(&vis->param) + ft_auto_rotate(&vis->param)))
 		vis->param.is_points_change = TRUE;
+    ft_create_new_elem(all, &vis->param);
 	if (vis->param.is_points_change)
 	{
         ft_clear_image(&(vis->pic));
@@ -356,24 +348,6 @@ int		ft_loop_hook(void *param)
     mlx_do_sync(all->vis->mlx);
     return (0);
 }
-
-
-void ft_print_points(void *elem, void *param)
-{
-	t_vektr *v = (t_vektr *)elem;
-
-	printf("%.f_%.f_%.f\n", v->abs.x, v->abs.y, v->abs.z);
-}
-
-void ft_print_lines(void *elem, void *param)
-{
-	t_vektr *v = ((t_line *)elem)->p1;
-	t_vektr *v1 = ((t_line *)elem)->p2;
-
-	printf("%.f__%.f\n", v->abs.z, v1->abs.z);
-	// printf("%.f_%.f_%.f___%.f_%.f_%.f\n", v->abs.x, v->abs.y, v->abs.z, v1->abs.x, v1->abs.y, v1->abs.z);
-}
-
 
 int 	ft_init_all(t_all *all)
 {
@@ -421,15 +395,11 @@ int		main(int argc, char **argv)
 		ft_exit(&all, MSG_ERROR1);
     if (ft_poligons_from_points(all.points, all.plgns) == FAIL)
         ft_exit(&all, MSG_ERROR1);
-//	ft_for_each_elem(all.points, &ft_print_points, NULL);
+
 	printf("lines count = %d\n", all.lines->elems_used);
 	printf("polig count = %d\n", all.plgns->elems_used);
-//    return (0);
-    all.vis->param.centr = ft_arr_get(all.points, 0);
 
-//	ft_for_each_elem(all.lines, &ft_print_lines, NULL);
-	// ft_shift_points_to_center(points);
-	// ft_lines_from_points(&begin_line, begin_point);
+    all.vis->param.centr = ft_arr_get(all.points, 0);
 
     mlx_hook(all.vis->win, 2, KEY_PRESS_MASK, ft_deal_key, (void *)&all.vis->param);
 	mlx_hook(all.vis->win, 6, POINTER_MOTION_MASK, ft_mouse_move, (void *)&all);
