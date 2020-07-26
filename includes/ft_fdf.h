@@ -69,7 +69,7 @@
 #define BLUE_COLOR 0xFF
 #define ACTIVE_COLOR RED_COLOR
 
-#define MSG_ERROR1 "Malloc error\n"
+#define MSG_ERROR1 "Malloc error\n\0\0Not valid map\n\0File not found\n"
 
 
 #define SPEED 10
@@ -100,25 +100,13 @@ typedef enum	e_persp
 	LAST_PERSPECTIVE
 }				t_persp;
 
-typedef enum	e_print
+typedef enum	e_status
 {
-	COLOR = 1,
-	RADIUS2,
-	COLUMN_COUNT2
-}				t_print;
-
-typedef enum	e_column
-{
-	FLUID = 0,
-	F_H,
-	F_C,
-	F_MASS,
-	F_PRESS,
-	F_DENS,
-	F_VIS,
-	F_Y_SPEED,
-	COLUMN_COUNT
-}				t_column;
+    NO_ERR = 0,
+    MALLOC_ERROR,
+    VALIDATION_ERROR,
+    FILE_ERROR
+}				t_stat;
 
 typedef enum	e_form
 {
@@ -148,9 +136,9 @@ void    ft_print_front(t_pict *pic, t_param *param);
 /*
 **	create_points_from_points.c
 */
-int		ft_get_color_from_string(char *str);
-int		ft_string_to_points(char *str, t_arr *points, int y);
-int		ft_points_from_file(char *name, t_arr *points);
+t_stat	ft_get_color_from_string(char *str, int *color);
+t_stat  ft_string_to_points(char *str, t_arr *points, int y);
+t_stat  ft_points_from_file(char *name, t_arr *points);
 
 /*
 **	create_lines_from_points.c

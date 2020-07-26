@@ -411,11 +411,12 @@ void	ft_exit(t_all *all, char *error_message)
 int		main(int argc, char **argv)
 {
 	t_all all;
+	int status;
 
 	if (ft_init_all(&all) == FAIL)
 		ft_exit(&all, MSG_ERROR1);
-	if (ft_points_from_file("text.txt", all.points) == FAIL)
-		ft_exit(&all, MSG_ERROR1);
+	if ((status = ft_points_from_file("text.txt", all.points)) != NO_ERR)
+		ft_exit(&all, (char *)MSG_ERROR1 + (status - 1) * 15);
 	if (ft_create_pair_from_points(all.points, all.lines) == FAIL)
 		ft_exit(&all, MSG_ERROR1);
     if (ft_poligons_from_points(all.points, all.plgns) == FAIL)

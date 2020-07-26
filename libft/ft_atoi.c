@@ -40,3 +40,47 @@ int		ft_atoi(const char *str)
 	}
 	return (znak * nb);
 }
+
+int     get_digit(char c, int base)
+{
+    int num;
+
+    if (c >= '0' && c <= '9')
+        num = c - '0';
+    else if (c >= 'a' && c <= 'f')
+        num = c - 'a' + 10;
+    else if (c >= 'A' && c <= 'F')
+        num = c - 'A' + 10;
+    else
+        num = base;
+    if (num < base)
+        return (num);
+    else
+        return (-1);
+}
+
+int     ft_atoi_base(const char *str, int base)
+{
+    int result;
+    int sign;
+    int digit;
+
+    result = 0;
+    if (!str || base <= 0)
+        return (result);
+    while (*str && ft_isspace(*str))
+        str++;
+    sign = 1;
+    if (*str == '-' && base == 10)
+    {
+        sign = -1;
+        ++str;
+    }
+    while (*str && (digit = get_digit(*str, base)) >= 0)
+    {
+        result = result * base;
+        result = result + (digit * sign);
+        str++;
+    }
+    return (result);
+}

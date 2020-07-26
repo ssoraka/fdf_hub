@@ -56,66 +56,77 @@ void	ft_change_points_color(t_arr *points)
 	}
 }
 
-int		ft_get_color_from_string(char *str)
+t_stat	ft_get_num_and_color_from_string(char **string, int *z, int *color)
 {
-	while (*str && (*str == ',' || ft_isdigit(*str) || *str == '-'))
-	{
-		//надо сделать атоибейс
-		if (*str == 'x')
-			return (ft_atoi(str));
-		str++;
-	}
-	return (DEFAULT_COLOR);
+    char *str;
+
+    str = *string;
+    if (!ft_isdigit(*str) && *str != '-')
+        return (VALIDATION_ERROR);
+    *z = ft_atoi(str);
+    if (*str == '-')
+        str++;
+    while (*str && ft_isdigit(*str))
+        str++;
+    *color = DEFAULT_COLOR;
+    *string = str;
+    if (ft_strncmp(str, ",0x", 3))
+        return (NO_ERR);
+    str = str + 3;
+    *color = ft_atoi_base(str, 16);
+    while (*str && ft_strchr("0123456789abcdefABCDEF", *str))
+        str++;
+    if (*str && !ft_isspace(*str))
+        return (VALIDATION_ERROR);
+    *string = str;
+    return (NO_ERR);
 }
 
-int		ft_string_to_points(char *str, t_arr *points, int y)
+
+t_stat  ft_string_to_points(char *str, t_arr *points, int y)
 {
 	int x;
 	int z;
 	t_vektr tmp;
-	int has_err;
 
 	x = 0;
 	ft_bzero((void *)&tmp, sizeof(t_vektr));
-	has_err = FALSE;
 	while (*str)
 	{
 		while (*str && ft_isspace(*str))
 			str++;
-		z = ft_atoi(str);
+        if (!(*str))
+            return (NO_ERR);
+        if (ft_get_num_and_color_from_string(&str, &z, &tmp.color) != NO_ERR)
+            return (VALIDATION_ERROR);
 		ft_fill_dpoint(&(tmp.abs), y, x, z);
-		tmp.color = ft_get_color_from_string(str);
 		if (!ft_arr_add(points, &tmp))
-		{
-			has_err = TRUE;
-			break ;
-		}
+            return (MALLOC_ERROR);
 		while (*str && (ft_isdigit(*str) || *str == '-'))
 			str++;
 		x++;
 	}
-	return (has_err);
+	return (NO_ERR);
 }
 
-int		ft_points_from_file(char *name, t_arr *points)
+t_stat  ft_points_from_file(char *name, t_arr *points)
 {
 	char	*str;
 	int		fd;
 	int		row;
-	int		has_error;
+	int		status;
 
 	if ((fd = open(name, O_RDWR)) < 0)
-		return (1);
-	has_error = 0;
+		return (FILE_ERROR);
+    status = NO_ERR;
 	row = 0;
-	while (get_next_line(fd, &str) > 0 && !has_error)
+	while (get_next_line(fd, &str) > 0 && status == NO_ERR)
 	{
-		if (ft_string_to_points(str, points, row) == FAIL)
-			has_error = TRUE;
+        status = ft_string_to_points(str, points, row);
 		free(str);
 		row++;
 	}
 	close(fd);
 	ft_change_points_color(points);
-	return (has_error);
+	return (status);
 }
