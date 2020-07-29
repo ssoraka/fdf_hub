@@ -121,6 +121,13 @@ int		ft_shift(t_param *vis, int key)
 	return (TRUE);
 }
 
+/*
+int     ft_deal_key_release(int key, void *parametrs)
+{
+    printf("release %d\n", key);
+    return (SUCCESS);
+}
+ */
 
 int		ft_deal_key(int key, void *parametrs)
 {

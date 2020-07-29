@@ -401,10 +401,11 @@ int		main(int argc, char **argv)
 
     all.vis->param.centr = ft_arr_get(all.points, 0);
 
-    mlx_hook(all.vis->win, 2, KEY_PRESS_MASK, ft_deal_key, (void *)&all.vis->param);
-	mlx_hook(all.vis->win, 6, POINTER_MOTION_MASK, ft_mouse_move, (void *)&all);
-    mlx_hook(all.vis->win, 4, BUTTON_PRESS_MASK, ft_mouse_press, (void *)&all);
-	mlx_hook(all.vis->win, 5, BUTTON_RELEASE_MASK, ft_mouse_release, (void *)&all);
+    mlx_hook(all.vis->win, KEY_PRESS, KEY_PRESS_MASK, ft_deal_key, (void *)&all.vis->param);
+//    mlx_hook(all.vis->win, KEY_RELEASE, KeyReleaseMask, ft_deal_key_release, (void *)&all.vis->param);
+	mlx_hook(all.vis->win, MOTION_NOTIFY, POINTER_MOTION_MASK, ft_mouse_move, (void *)&all);
+    mlx_hook(all.vis->win, BUTTON_PRESS, BUTTON_PRESS_MASK, ft_mouse_press, (void *)&all);
+	mlx_hook(all.vis->win, BUTTON_RELEASE, BUTTON_RELEASE_MASK, ft_mouse_release, (void *)&all);
 	mlx_loop_hook(all.vis->mlx, ft_loop_hook, (void *)&all);
 	mlx_loop(all.vis->mlx);
 

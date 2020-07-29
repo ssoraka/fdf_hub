@@ -34,11 +34,21 @@
 #define POINTER_MOTION_MASK PointerMotionMask
 #define BUTTON_PRESS_MASK ButtonPressMask
 #define BUTTON_RELEASE_MASK ButtonReleaseMask
+#define KEY_PRESS KeyPress
+#define KEY_RELEASE KeyRelease
+#define BUTTON_PRESS ButtonPress
+#define BUTTON_RELEASE ButtonRelease
+#define MOTION_NOTIFY MotionNotify
 #else
 #define KEY_PRESS_MASK 0
 #define POINTER_MOTION_MASK 0
 #define BUTTON_PRESS_MASK 0
 #define BUTTON_RELEASE_MASK 0
+#define KEY_PRESS 		2
+#define KEY_RELEASE 		3
+#define BUTTON_PRESS 		4
+#define BUTTON_RELEASE 		5
+#define MOTION_NOTIFY 		6
 #endif
 
 #define ABS(nbr) ((nbr) >= 0 ? (nbr) : (-1) * (nbr))
@@ -220,6 +230,7 @@ void	draw_line_img(t_line *line, t_pict *pic, int grad);
 int		ft_rotate_and_csale(t_param *vis, int key);
 int		ft_shift(t_param *vis, int key);
 int		ft_deal_key(int key, void *parametrs);
+//int		ft_deal_key_release(int key, void *parametrs);
 int		ft_csale_picture(t_param *vis, int button, t_point *mouse);
 
 /*

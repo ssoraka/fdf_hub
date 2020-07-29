@@ -37,7 +37,7 @@
 #define KEY_R 1739
 #define KEY_G 1744
 #define KEY_I 1755
-#define KEY_C 8
+#define KEY_C 1747
 
 #define LEFT_BUTTON 1
 #define RIGHT_BUTTON 3
