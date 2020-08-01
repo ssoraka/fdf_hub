@@ -99,26 +99,7 @@ t_vis	*ft_create_mlx(int width, int heigth, char *name)
 
 
 
-int		ft_not_need_print(t_line *line, t_pict *pic)
-{
-	if (line->p1->zoom.y <= 0 && line->p2->zoom.y <= 0)
-		return (TRUE);
-	if (line->p1->zoom.x <= 0 && line->p2->zoom.x <= 0)
-		return (TRUE);
-	if (line->p1->zoom.y >= CONST_HEINTH && line->p2->zoom.y >= CONST_HEINTH)
-		return (TRUE);
-	if (line->p1->zoom.x >= CONST_WIDTH && line->p2->zoom.x >= CONST_WIDTH)
-		return (TRUE);
-	//хз, спорное условие...
-	/*if (line->p1->zoom.x >= 0 && line->p1->zoom.x < CONST_WIDTH
-	&& line->p1->zoom.y >= 0 && line->p1->zoom.y < CONST_HEINTH
-	&& pic->z_buffer[line->p1->zoom.y * CONST_WIDTH + line->p1->zoom.x] > line->p1->zoom.z + 10
-	&& line->p2->zoom.x >= 0 && line->p2->zoom.x < CONST_WIDTH
-	&& line->p2->zoom.y >= 0 && line->p2->zoom.y < CONST_HEINTH
-	&& pic->z_buffer[line->p2->zoom.y * CONST_WIDTH + line->p2->zoom.x] > line->p2->zoom.z + 10)
-		return (TRUE);*/
-	return (FALSE);
-}
+
 
 t_vis	*ft_destroy_mlx(t_vis **vis)
 {

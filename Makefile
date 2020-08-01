@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-GCC = gcc -g -MMD
+GCC = gcc -g -MMD -Wall -Wextra -Werror
 NAME = fdf
 SRCS = color_interpolation.c       get_pixel.c  lines_vektrs.c  points.c        rotate.c \
        create_lines_from_points.c  images.c     main.c          poligons.c      front.c \

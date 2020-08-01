@@ -59,14 +59,16 @@ void	ft_vektr_interpolation_by_y(t_vektr *p, t_vektr *p1, t_vektr *p2, int grad)
 		p->color = p2->color;
 		return ;
 	}
-
 	p->zoom.x = ft_int_interpolation(y, delta_y, p2->zoom.x, p1->zoom.x);
 	p->zoom.z = ft_int_interpolation(y, delta_y, p2->zoom.z, p1->zoom.z);
-	p->color = ft_grad_color(y, delta_y, p1->color, p2->color);
+	if (grad)
+    	p->color = ft_grad_color(y, delta_y, p1->color, p2->color);
+    else
+        p->color = p1->color;
 }
 
 
-int		ft_need_print_traing(t_vektr **p, t_pict *pic)
+int		ft_need_print_traing(t_vektr **p)
 {
 	if (p[0]->zoom.y < 0 && p[1]->zoom.y < 0 && p[2]->zoom.y < 0)
 		return (FALSE);
@@ -153,7 +155,7 @@ void	ft_print_plgn(t_plgn *plgn, t_pict *pic, int grad)
 	int colors[4];
 
 	ft_save_points_colors(plgn, colors);
-    if (!ft_need_print_traing(plgn->p, pic))
+    if (!ft_need_print_traing(plgn->p))
         return ;
     ft_change_points_colors(plgn);
     p[0] = plgn->p[0];

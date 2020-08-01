@@ -199,7 +199,6 @@ void	ft_rotate_point_around_point(t_param *param, t_vektr *p, t_dpoint *zero);
 */
 int		ft_create_img(t_pict *pic, void *mlx, int width, int heigth);
 t_vis	*ft_create_mlx(int width, int heigth, char *name);
-int		ft_not_need_print(t_line *line, t_pict *pic);
 
 void	ft_destroy_img(t_pict *pic);
 void	ft_clear_image(t_pict *pic);

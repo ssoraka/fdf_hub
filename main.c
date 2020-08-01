@@ -28,9 +28,7 @@ void	ft_print_all_lines(t_arr *lines, t_pict *pic, t_param *param)
         line.index = DEFAULT_INDEX;
 	    line.p1 = *(v++);
 	    line.p2 = *(v++);
-	    if (!(line.p1->zoom.x == UNPRINTABLE && line.p1->zoom.y == UNPRINTABLE)
-	    && !(line.p2->zoom.x == UNPRINTABLE && line.p2->zoom.y == UNPRINTABLE))
-            draw_line_img(&line, pic, param->grad);
+	    draw_line_img(&line, pic, param->grad);
         i++;
 	}
 }
@@ -53,7 +51,7 @@ void	ft_print_all_poligons(t_arr *plgns, t_pict *pic, t_param *param)
     }
 }
 
-void	ft_print_all_points(t_arr *points, t_pict *pic, t_param *param)
+void	ft_print_all_points(t_arr *points, t_pict *pic)
 {
     t_vektr *v;
     int i;
@@ -98,9 +96,9 @@ void	ft_rotate_all_points(t_arr *points, t_param *param)
 
 int		ft_move_camera(t_param *param)
 {
-	int dx[2];
-	int dy[2];
-	int bigest;
+//	int dx[2];
+//	int dy[2];
+//	int bigest;
 
     if (param->target_x == param->cam_x && param->target_y == param->cam_y)
 		return (FALSE);
@@ -142,32 +140,6 @@ int		ft_mouse_get_new_pos(int x, int y, t_param *param)
     return (TRUE);
 }
 
-//int     ft_activate_nearest_elem(t_all *all, t_param *param)
-//{
-//    int id;
-//
-//    if (param->near_id == DEFAULT_INDEX)
-//        return (FALSE);
-//    //param->cam_x = param->centr->zoom.x;
-//    //param->cam_y = param->centr->zoom.y;
-//    param->active_id = param->near_id;
-//    param->act[0] = NULL;
-//    param->act[1] = NULL;
-//    if (param->near_id > 0)
-//    {
-//        id = param->near_id - 1;
-//        param->act[0] = ft_arr_get(all->points, id);
-//    }
-//    else
-//    {
-//        id = -param->near_id - 1;
-//        param->act[0] = ft_arr_get(all->lines, id * 2);
-//        param->act[1] = ft_arr_get(all->lines, id * 2 + 1);
-//    }
-//    param->near_id = DEFAULT_INDEX;
-//    return (TRUE);
-//}
-
 t_vektr *ft_get_nearest_point(t_all *all, t_param *param)
 {
     int id;
@@ -175,6 +147,7 @@ t_vektr *ft_get_nearest_point(t_all *all, t_param *param)
 
     if (param->near_id == DEFAULT_INDEX)
         return (NULL);
+    v = NULL;
     if (param->near_id > 0)
     {
         param->active_id = param->near_id;
@@ -339,7 +312,7 @@ int		ft_loop_hook(void *param)
             ft_print_all_poligons(all->plgns, &(vis->pic), &(vis->param));
         else
             ft_print_all_lines(all->lines, &(vis->pic), &(vis->param));
-        ft_print_all_points(all->points, &(vis->pic), &(vis->param));
+        ft_print_all_points(all->points, &(vis->pic));
         ft_print_active(&(vis->pic), &(vis->param));
         ft_print_front(&(vis->pic), &(vis->param));
 //		ft_memcpy((void *)vis->pic.addr, (void *)vis->pic.index, vis->pic.count_byte);
@@ -414,6 +387,7 @@ int		main(int argc, char **argv)
         return (ft_print_usage());
 	if (ft_init_all(&all) == FAIL)
 		ft_exit(&all, MSG_ERROR1);
+
 	if ((status = ft_points_from_file(argv[1], all.points)) != NO_ERR)
 		ft_exit(&all, (char *)MSG_ERROR1 + (status - 1) * 14);
 	if (ft_create_pair_from_points(all.points, all.lines) == FAIL)
@@ -421,9 +395,7 @@ int		main(int argc, char **argv)
     if (ft_poligons_from_points(all.points, all.plgns) == FAIL)
         ft_exit(&all, MSG_ERROR1);
 
-	printf("lines count = %d\n", all.lines->elems_used);
-	printf("polig count = %d\n", all.plgns->elems_used);
-
+    
     all.vis->param.centr = ft_arr_get(all.points, 0);
 
     mlx_hook(all.vis->win, KEY_PRESS, KEY_PRESS_MASK, ft_deal_key, (void *)&all.vis->param);

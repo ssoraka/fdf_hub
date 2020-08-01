@@ -65,14 +65,28 @@ void	draw_line_img_over(t_line *line, t_pict *pic, int grad, t_shape *shape)
     shape->print(pic, &(line->p2->zoom), shape);
 }
 
-
+int		ft_not_need_print(t_line *line)
+{
+    if (line->p1->zoom.y <= 0 && line->p2->zoom.y <= 0)
+        return (TRUE);
+    if (line->p1->zoom.x <= 0 && line->p2->zoom.x <= 0)
+        return (TRUE);
+    if (line->p1->zoom.y >= CONST_HEINTH && line->p2->zoom.y >= CONST_HEINTH)
+        return (TRUE);
+    if (line->p1->zoom.x >= CONST_WIDTH && line->p2->zoom.x >= CONST_WIDTH)
+        return (TRUE);
+    if ((line->p1->zoom.x == UNPRINTABLE && line->p1->zoom.y == UNPRINTABLE)
+    || (line->p2->zoom.x == UNPRINTABLE && line->p2->zoom.y == UNPRINTABLE))
+        return (TRUE);
+    return (FALSE);
+}
 
 void	draw_line_img(t_line *line, t_pict *pic, int grad)
 {
 	t_point p;
 	t_shape shape;
 
-	if (ft_not_need_print(line, pic))
+	if (ft_not_need_print(line))
 		return ;
 	ft_fill_point(&p, line->p1->zoom.y, line->p1->zoom.x, line->p1->zoom.z);
 	line->dir.y = ft_znak(line->p2->zoom.y - p.y);

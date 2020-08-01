@@ -34,7 +34,6 @@ void    ft_create_lines(t_arr *lines, t_vektr *v1, t_vektr *v2)
 void    ft_create_new_elem(t_all *all, t_param *param)
 {
     t_plgn plgn;
-    t_line line;
 
     if (param->is_creating <= 1)
         return ;
