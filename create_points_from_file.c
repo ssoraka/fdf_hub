@@ -81,8 +81,10 @@ t_stat  ft_string_to_points(char *str, t_arr *points, int y)
 	{
 		while (*str && ft_isspace(*str))
 			str++;
-        if (!(*str))
+        if (!(*str) && x > 0)
             return (NO_ERR);
+        if (!(*str))
+            return (VALIDATION_ERROR);
         if (ft_get_num_and_color_from_string(&str, &z, &tmp.color) != NO_ERR)
             return (VALIDATION_ERROR);
 		ft_fill_dpoint(&(tmp.abs), y, x, z);
@@ -105,6 +107,7 @@ t_stat  ft_points_from_file(char *name, t_arr *points)
 	if ((fd = open(name, O_RDWR)) < 0)
 		return (FILE_ERROR);
     status = NO_ERR;
+    str = NULL;
 	row = 0;
 	while (get_next_line(fd, &str) > 0 && status == NO_ERR)
 	{
@@ -113,6 +116,9 @@ t_stat  ft_points_from_file(char *name, t_arr *points)
 		row++;
 	}
 	close(fd);
-	ft_change_points_color(points);
+	if (!row)
+        return (FILE_ERROR);
+	if (status == NO_ERR)
+    	ft_change_points_color(points);
 	return (status);
 }

@@ -381,16 +381,41 @@ void	ft_exit(t_all *all, char *error_message)
 	exit(0);
 }
 
+int     ft_print_usage()
+{
+    ft_putendl("usage:");
+    ft_putendl("./fdf map");
+    ft_putendl("");
+    ft_putendl("where map is file with numbers:");
+    ft_putendl("0 1 1");
+    ft_putendl("1 2 1");
+    ft_putendl("0 0 -1");
+    ft_putendl("");
+    ft_putendl("Key control:");
+    ft_putendl("Q,W,E,A,S,D, LEFT MOUSE - rotate");
+    ft_putendl("UP,DOWN,LEFT,RIGHT,MIDDLE MOUSE - shift");
+    ft_putendl("+,-,MIDDLE ROTATE MOUSE - backtrack");
+    ft_putendl("RIGHT MOUSE - change rotate center");
+    ft_putendl("Z/X - increase/decrease z coordinate");
+    ft_putendl("P - change prospect");
+    ft_putendl("O/I - increase/decrease prospect");
+    ft_putendl("G - gradient");
+    ft_putendl("C - first press allow mark 2-3 point");
+    ft_putendl("C - second press create new lines and polygon");
+    return (0);
+}
 
 int		main(int argc, char **argv)
 {
 	t_all all;
 	int status;
 
+	if (argc == 1)
+        return (ft_print_usage());
 	if (ft_init_all(&all) == FAIL)
 		ft_exit(&all, MSG_ERROR1);
-	if ((status = ft_points_from_file("text.txt", all.points)) != NO_ERR)
-		ft_exit(&all, (char *)MSG_ERROR1 + (status - 1) * 15);
+	if ((status = ft_points_from_file(argv[1], all.points)) != NO_ERR)
+		ft_exit(&all, (char *)MSG_ERROR1 + (status - 1) * 14);
 	if (ft_create_pair_from_points(all.points, all.lines) == FAIL)
 		ft_exit(&all, MSG_ERROR1);
     if (ft_poligons_from_points(all.points, all.plgns) == FAIL)

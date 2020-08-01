@@ -81,7 +81,7 @@
 #define ACTIVE_COLOR RED_COLOR
 #define CREATE_COLOR BLUE_COLOR
 
-#define MSG_ERROR1 "Malloc error\n\0\0Not valid map\n\0File not found\n"
+#define MSG_ERROR1 "Malloc error\0\0Not valid map\0File not found"
 
 #define DELTA_Z 0.01
 #define SPEED 10
