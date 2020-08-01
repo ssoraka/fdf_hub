@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   collections_struct.h                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssoraka <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/10 20:59:39 by ssoraka           #+#    #+#             */
+/*   Updated: 2019/04/19 13:13:30 by ssoraka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef FT_COLLECTIONS_STRUCT_H
 # define FT_COLLECTIONS_STRUCT_H
@@ -7,6 +18,13 @@
 # define BLACK 1
 
 # define MAX_LIST_SIZE 128
+
+typedef void	t_new_elem;
+typedef void	t_old_elem;
+typedef void	t_new_key;
+typedef void	t_old_key;
+typedef int		t_bool;
+
 typedef struct		s_arr
 {
 	void			*elems;
@@ -18,7 +36,6 @@ typedef struct		s_arr
 	void			(*func_del)(void *);
 	void			*(*value)(void *);
 }					t_arr;
-
 
 typedef struct		s_lnode
 {

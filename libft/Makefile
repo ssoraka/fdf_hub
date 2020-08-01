@@ -92,7 +92,17 @@ ft_strlowcase.c \
 ft_max.c \
 ft_min.c \
 ft_swap.c \
-arr.c hmap.c ilist.c llist.c lnode.c rbtree.c
+collections/arr_init.c collections/arr_del.c collections/arr_each.c \
+collections/arr_get.c collections/arr_add.c \
+collections/hmap.c collections/hmap2.c \
+collections/ilist_setters.c collections/ilist_setters2.c \
+collections/llist_init.c collections/llist_add.c collections/llist_del.c \
+collections/llist_get.c collections/llist_stack.c \
+collections/lnode.c \
+collections/tnode_track.c collections/tnode_init_del.c \
+collections/tnode_rebalance.c collections/tnode_rbtree_property.c \
+collections/rbtree_add_get.c collections/rbtree_del.c \
+collections/rbtree_track.c collections/rbtree_init.c
 OBJS = $(SRC:.c=.o)
 
 .PHONY: clean all fclean re
