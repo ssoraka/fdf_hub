@@ -17,7 +17,7 @@
 #define CAM_ROTATE 90
 #define PERSP_SPEED 4
 #define MIN_RADIUS 500
-#define MAX_RADIUS 5000
+#define MAX_RADIUS 20000
 
 
 #define MIN_SCALE 0.01
@@ -69,7 +69,7 @@ int		ft_rotate_and_csale(t_param *vis, int key)
 		vis->ang.x -= M_PI / CAM_ROTATE;
     else if (key == KEY_O && vis->radius > MIN_RADIUS)
         vis->radius -= PERSP_SPEED;
-    else if (key == KEY_I && vis->radius < MIN_RADIUS)
+    else if (key == KEY_I && vis->radius < MAX_RADIUS)
         vis->radius += PERSP_SPEED;
     else if (key == KEY_C)
         vis->is_creating++;
@@ -121,13 +121,6 @@ int		ft_shift(t_param *vis, int key)
 	return (TRUE);
 }
 
-/*
-int     ft_deal_key_release(int key, void *parametrs)
-{
-    printf("release %d\n", key);
-    return (SUCCESS);
-}
- */
 
 int		ft_deal_key(int key, void *parametrs)
 {
@@ -138,19 +131,21 @@ int		ft_deal_key(int key, void *parametrs)
 	if (ft_rotate_and_csale(param, key) || ft_shift(param, key))
 		param->is_points_change = TRUE;
     else if (key == KEY_P)
-    {
         param->perspective++;
-        if (param->perspective == LAST_PERSPECTIVE)
-            param->perspective = NO_PERSPECTIVE;
-    }
     else if (key == KEY_K)
         param->is_poligons_need_print = !param->is_poligons_need_print;
     else if (key == KEY_G)
 		param->grad = !param->grad;
     else if (key == KEY_ESC)
 		param->exit = TRUE;
+    else if (key == KEY_Z)
+        param->coeff_z += DELTA_Z;
+    else if (key == KEY_X)
+        param->coeff_z -= DELTA_Z;
     else
         return (FAIL);
+    if (param->perspective == LAST_PERSPECTIVE)
+        param->perspective = NO_PERSPECTIVE;
     param->is_points_change = TRUE;
 	return (SUCCESS);
 }

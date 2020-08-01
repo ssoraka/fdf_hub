@@ -12,20 +12,6 @@
 
 #include "./includes/ft_fdf.h"
 
-REAL	ft_max_mytype(REAL first, REAL second)
-{
-	if (first > second)
-		return (first);
-	return (second);
-}
-
-REAL	ft_min_mytype(REAL first, REAL second)
-{
-	if (first < second)
-		return (first);
-	return (second);
-}
-
 void	ft_change_points_color(t_arr *points)
 {
 	t_vektr *p;
@@ -39,8 +25,8 @@ void	ft_change_points_color(t_arr *points)
 	min_z = p->abs.z;
 	while ((p = (t_vektr *)ft_arr_get_next(points)))
 	{
-		max_z = ft_max_mytype(max_z, p->abs.z);
-		min_z = ft_min_mytype(min_z, p->abs.z);
+		max_z = (max_z >= p->abs.z) * max_z + (max_z < p->abs.z) * p->abs.z;
+        min_z = (min_z <= p->abs.z) * min_z + (min_z > p->abs.z) * p->abs.z;
 	}
 	while ((p = (t_vektr *)ft_arr_get_next(points)))
 	{

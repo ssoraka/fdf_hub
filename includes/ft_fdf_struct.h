@@ -95,6 +95,7 @@ typedef struct		s_param
 	int             is_poligons_need_print;
     double             radius;
 	double			len;
+	double			coeff_z;
 
 
     struct s_point	mouse;

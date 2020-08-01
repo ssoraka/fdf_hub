@@ -28,8 +28,8 @@ void	ft_print_all_lines(t_arr *lines, t_pict *pic, t_param *param)
         line.index = DEFAULT_INDEX;
 	    line.p1 = *(v++);
 	    line.p2 = *(v++);
-	    if (!(line.p1->zoom.x == -1 && line.p1->zoom.y == -1)
-	    && !(line.p2->zoom.x == -1 && line.p2->zoom.y == -1))
+	    if (!(line.p1->zoom.x == UNPRINTABLE && line.p1->zoom.y == UNPRINTABLE)
+	    && !(line.p2->zoom.x == UNPRINTABLE && line.p2->zoom.y == UNPRINTABLE))
             draw_line_img(&line, pic, param->grad);
         i++;
 	}

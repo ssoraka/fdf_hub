@@ -76,9 +76,9 @@ int		ft_need_print_traing(t_vektr **p, t_pict *pic)
 		return (FALSE);
 	if (p[0]->zoom.x >= CONST_WIDTH && p[1]->zoom.x >= CONST_WIDTH && p[2]->zoom.x >= CONST_WIDTH)
 		return (FALSE);
-	if ((p[0]->zoom.y == -1 && p[0]->zoom.x == -1)
-	|| (p[1]->zoom.y == -1 && p[1]->zoom.x == -1)
-	|| (p[2]->zoom.y == -1 && p[2]->zoom.x == -1))
+	if ((p[0]->zoom.y == UNPRINTABLE && p[0]->zoom.x == UNPRINTABLE)
+	|| (p[1]->zoom.y == UNPRINTABLE && p[1]->zoom.x == UNPRINTABLE)
+	|| (p[2]->zoom.y == UNPRINTABLE && p[2]->zoom.x == UNPRINTABLE))
 		return (FALSE);
 	return (TRUE);
 }

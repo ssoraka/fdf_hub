@@ -69,6 +69,7 @@
 #define WHITE_COLOR 0xFFFFFF
 #define BLACK_COLOR 0x0
 #define DEFAULT_COLOR -1
+#define UNPRINTABLE -100
 
 #define ZERO_COLOR 0xFF00
 #define UP_COLOR 0xFF0000
@@ -82,7 +83,7 @@
 
 #define MSG_ERROR1 "Malloc error\n\0\0Not valid map\n\0File not found\n"
 
-
+#define DELTA_Z 0.01
 #define SPEED 10
 #define ROTATE_ANGLE 0.05 / 180.0
 

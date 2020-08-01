@@ -38,6 +38,8 @@
 #define KEY_G 1744
 #define KEY_I 1755
 #define KEY_C 1747
+#define KEY_Z 1740
+#define KEY_X 1740
 
 #define LEFT_BUTTON 1
 #define RIGHT_BUTTON 3
@@ -74,6 +76,8 @@
 #define KEY_G 5
 #define KEY_I 34
 #define KEY_C 8
+#define KEY_Z 6
+#define KEY_X 7
 
 #define LEFT_BUTTON 1
 #define RIGHT_BUTTON 2
