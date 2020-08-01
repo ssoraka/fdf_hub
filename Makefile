@@ -12,10 +12,12 @@
 
 GCC = gcc -g -MMD -Wall -Wextra -Werror
 NAME = fdf
-SRCS = color_interpolation.c       get_pixel.c  lines_vektrs.c  points.c        rotate.c \
-       create_lines_from_points.c  images.c     main.c          poligons.c      front.c \
-       create_points_from_file.c   keys.c       print_shapes.c  create_poligons_from_points.c \
-       create_new_elems.c           print_active_points.c
+SRCS = color_interpolation.c       get_pixel.c  lines_vektrs.c  points.c       \
+       create_lines_from_points.c  images.c     main.c          polygons.c     \
+       create_points_from_file.c   keys.c       print_shapes.c  front.c \
+       create_new_elems.c          print_active_points.c        hooks.c     \
+       mouse.c    rotate.c         prints.c     prospect.c      picture.c    \
+       create_polygons_from_points.c points2.c  animation.c polygons2.c
 OBJS = $(SRCS:.c=.o)
 DEPENDS = ${OBJS:.o=.d} 
 HEAD = -I ./includes/

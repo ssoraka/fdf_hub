@@ -15,7 +15,7 @@
 char	*ft_byte_to_bits(char c)
 {
 	unsigned char	chr;
-	char	*str;
+	char			*str;
 	int				i;
 
 	i = 0;

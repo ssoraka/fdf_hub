@@ -15,46 +15,46 @@
 
 # include "ft_fdf.h"
 
-typedef double REAL;
+typedef double		t_real;
 
 typedef struct		s_point
 {
-	int y;
-	int x;
-	int z;
+	int				y;
+	int				x;
+	int				z;
 }					t_point;
 
 typedef struct		s_dpoint
 {
-	REAL y;
-	REAL x;
-	REAL z;
+	t_real			y;
+	t_real			x;
+	t_real			z;
 }					t_dpoint;
 
 typedef struct		s_vektr
 {
-	int color;
+	int				color;
 	struct s_dpoint	abs;
 	struct s_point	zoom;
 }					t_vektr;
 
 typedef struct		s_line
 {
-	int color;
-    int index;
-	struct s_point dir;
-	struct s_point delta;
-	struct s_vektr *p1;
-	struct s_vektr *p2;
+	int				color;
+	int				index;
+	struct s_point	dir;
+	struct s_point	delta;
+	struct s_vektr	*p1;
+	struct s_vektr	*p2;
 }					t_line;
 
 typedef struct		s_plgn
 {
-	int color;
+	int				color;
 	struct s_vektr	*p[4];
 	struct s_dpoint	n;
 	struct s_dpoint	rot_n;
-	REAL cos;
+	t_real			cos;
 }					t_plgn;
 
 typedef struct		s_pict
@@ -92,14 +92,13 @@ typedef struct		s_param
 
 	int				is_points_change;
 	int				grad;
-	int             is_poligons_need_print;
-    double             radius;
+	int				is_poligons_need_print;
+	double			radius;
 	double			len;
 	double			coeff_z;
 
-
-    struct s_point	mouse;
-    int             near_id;
+	struct s_point	mouse;
+	int				near_id;
 
 	int				right_button_press;
 	struct s_point	pos;
@@ -109,19 +108,18 @@ typedef struct		s_param
 	struct s_point	rot_pos;
 	struct s_point	first_pos;
 
-    int             active_id;
+	int				active_id;
 	struct s_vektr	*centr;
 
-	int             is_creating;
-	int             id;
-    struct s_vektr	*p_new[3];
+	int				is_creating;
+	int				id;
+	struct s_vektr	*p_new[3];
 
 	struct s_dpoint	light;
 	struct s_dpoint	ang;
 	struct s_dpoint	cos;
 	struct s_oxyz	oxyz;
 }					t_param;
-
 
 typedef struct		s_vis
 {
@@ -141,13 +139,13 @@ typedef struct		s_all
 
 typedef struct		s_shape
 {
-    int             color;
-    int             index;
-    int             len;
-    int             only_index;
-    int             is_particles;
-    int             form;
-    int     	    (*print)(t_pict *, t_point *, struct s_shape *);
+	int				color;
+	int				index;
+	int				len;
+	int				only_index;
+	int				is_particles;
+	int				form;
+	int				(*print)(t_pict *, t_point *, struct s_shape *);
 }					t_shape;
 
 #endif
