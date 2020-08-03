@@ -119,6 +119,7 @@ int		ft_deal_key(int key, void *parametrs)
 {
 	t_param *param;
 
+	printf("кнопка %d\n", key);
 	param = (t_param *)parametrs;
 	if (ft_rotate_or_shift(param, key) || ft_proection(param, key)
 	|| ft_persp_and_csale(param, key))
